@@ -19,6 +19,9 @@ class WebView(object):
     def _root(self):
         return self.selenium
 
+    def go_to_page(self):
+        self.open('')
+
     def find_element(self, locator):
         return self._root.find_element(*locator)
 
