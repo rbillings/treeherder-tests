@@ -13,6 +13,7 @@ class TestSingleResult:
 
     @pytest.mark.nondestructive
     def test_open_single_result(self, base_url, selenium):
+
         treeherder_page = TreeherderPage(base_url, selenium).open()
         revision_date = treeherder_page.first_revision_date
         single_result_page = treeherder_page.open_single_resultset()
