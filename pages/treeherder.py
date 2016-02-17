@@ -18,12 +18,6 @@ class TreeherderPage(Base):
     _job_details_actionbar_locator = (By.ID, 'job-details-actionbar')
     _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span')
     _logviewer_button_locator = (By.ID, 'logviewer-btn')
-<<<<<<< 96097695cdecedfef212f6b55624f12978ef91d9:pages/treeherder.py
-    _resultset_locator = (By.CSS_SELECTOR, 'div.row.result-set')
-=======
-    _resultset_datestamp_locator = (By.CSS_SELECTOR, '.result-set .result-set-title-left > span a')
-    _result_status_locator = (By.ID, 'job-details-panel')
->>>>>>> Updated datestamp locator:pages/resultset.py
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
 
     def wait_for_page_to_load(self):
@@ -44,7 +38,7 @@ class TreeherderPage(Base):
         return self.selenium.find_element(*self._first_resultset_datestamp_locator).text
 
     def open_next_unclassified_failure(self):
-        el = self.selenium.find_element(*self._resultset_datestamp_locator)
+        el = self.selenium.find_element(*self._first_resultset_datestamp_locator)
         Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
         el.send_keys('n')
         Wait(self.selenium, self.timeout).until(lambda s: self.job_result_status)
