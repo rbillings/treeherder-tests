@@ -13,7 +13,6 @@ from pages.page import Page
 
 class TreeherderPage(Base):
 
-    _first_resultset_locator = (By.CSS_SELECTOR, '.th-view-content > ng-view:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1) > span:nth-child(1) > span:nth-child(2) > a:nth-child(1)')
     _first_resultset_datestamp_locator = (By.CSS_SELECTOR, '.result-set .result-set-title-left > span a')
     _job_details_actionbar_locator = (By.ID, 'job-details-actionbar')
     _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span')
@@ -84,7 +83,7 @@ class SingleResultPage(Page):
     def __init__(self, base_url, selenium):
         Page.__init__(self, base_url, selenium)
         Wait(self.selenium, self.timeout).until(
-            expected.window_with_title('mozilla-inbound'))
+            EC.visibility_of_element_located(self._single_resultset_datestamp_locator))
 
     @property
     def revision_date(self):
