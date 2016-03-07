@@ -164,6 +164,26 @@ class TreeherderPage(Base):
             Wait(self.selenium, self.timeout).until(lambda _: el.get_attribute('aria-expanded') == 'true')
             self.selenium.find_element(*self._clear_all_menu_locator).click()
 
+    def select_next_job(self):
+        el = self.selenium.find_element(*self._resultset_locator)
+        Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
+        el.send_keys(Keys.ARROW_RIGHT)
+        Wait(self.selenium, self.timeout).until(lambda s: self.job_result_status)
+        return self.selenium.find_element(*self._next_job_title).get_attribute('title')
+
+    def add_selected_job_to_pinboard(self):
+        el = self.selenium.find_element(*self._resultset_locator)
+        Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
+        el.send_keys(Keys.SPACE)
+        Wait(self.selenium, self.timeout).until(lambda s: self.is_pinboard_open)
+
+    def is_pinboard_open(self):
+        return self.is_element_visible(self._pinboard_locator)
+
+    @property
+    def pinned_job_title(self):
+        return self.selenium.find_element(*self._next_job_title).get_attribute('title')
+
         class Job(PageRegion):
 
             @property
