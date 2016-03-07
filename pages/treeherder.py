@@ -5,6 +5,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait as Wait
+from selenium.webdriver.common.keys import Keys
 
 import expected
 from pages.base import Base
@@ -18,6 +19,11 @@ class TreeherderPage(Base):
     _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span')
     _logviewer_button_locator = (By.ID, 'logviewer-btn')
     _results_locator = (By.CSS_SELECTOR, '.result-set-bar')
+    _next_job_title = (By.CSS_SELECTOR, '[class*="btn job-btn btn-dkgray"]')
+    _pinboard_locator = (By.ID, 'pinboard-panel')
+    _pinboard_remove_job_locator = (By.CSS_SELECTOR, 'i.fa-times')
+    _resultset_locator = (By.CSS_SELECTOR, 'div.row.result-set')
+    _result_status_locator = (By.ID, 'job-details-panel')
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
 
     def wait_for_page_to_load(self):
@@ -63,6 +69,26 @@ class TreeherderPage(Base):
         Wait(self.selenium, self.timeout).until(
             EC.visibility_of_element_located(self._first_resultset_datestamp_locator))
         self.selenium.find_element(*self._first_resultset_datestamp_locator).click()
+
+    def select_next_job(self):
+        el = self.selenium.find_element(*self._resultset_locator)
+        Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
+        el.send_keys(Keys.ARROW_RIGHT)
+        Wait(self.selenium, self.timeout).until(lambda s: self.job_result_status)
+        return self.selenium.find_element(*self._next_job_title).get_attribute('title')
+
+    def add_selected_job_to_pinboard(self):
+        el = self.selenium.find_element(*self._resultset_locator)
+        Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
+        el.send_keys(Keys.SPACE)
+        Wait(self.selenium, self.timeout).until(lambda s: self.is_pinboard_open)
+
+    def is_pinboard_open(self):
+        return self.is_element_visible(self._pinboard_locator)
+
+    @property
+    def pinned_job_title(self):
+        return self.selenium.find_element(*self._next_job_title).get_attribute('title')
 
 
 class LogviewerPage(Page):
