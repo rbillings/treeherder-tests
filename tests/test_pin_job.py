@@ -9,13 +9,30 @@ from pages.treeherder import TreeherderPage
 
 class TestUnclassifiedJobs:
 
-    def test_pin_next_job(self, base_url, selenium, new_user):
-        # Open treeherder page, log in and pin a job
+    def test_pin_next_job(self, base_url, selenium):
+        # Open treeherder page, select next job and pin it
         page = TreeherderPage(base_url, selenium).open()
-        page.header.login(new_user['email'], new_user['password'])
-        assert page.header.is_user_logged_in
 
         next_job_title = page.select_next_job()
         page.add_selected_job_to_pinboard()
 
         assert next_job_title == page.pinned_job_title
+
+    def test_pin_job_from_logviewer(self, base_url, selenium):
+        # Open treeherder page, select next job, pin it by the logviewer icon
+        page = TreeherderPage(base_url, selenium).open()
+
+        next_job_title = page.select_next_job()
+        page.pin_job_from_logviewer()
+
+        assert next_job_title == page.pinned_job_title
+
+    def test_clear_pinboard(self, base_url, selenium):
+        # Open treeherder page, pin a job and then clear the pinboard
+        page = TreeherderPage(base_url, selenium).open()
+
+        page.select_next_job()
+        page.add_selected_job_to_pinboard()
+        page.clear_pinboard()
+
+        assert not page.any_jobs_pinned
