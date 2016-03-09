@@ -17,6 +17,8 @@ class TreeherderPage(Base):
     _job_details_actionbar_locator = (By.ID, 'job-details-actionbar')
     _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span')
     _logviewer_button_locator = (By.ID, 'logviewer-btn')
+    _results_locator = (By.CSS_SELECTOR, '.result-set-bar')
+    _single_resultset_datestamp_locator = (By.CSS_SELECTOR, '.result-set-title-left > span:nth-child(2) > a:nth-child(1)')
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
 
     def wait_for_page_to_load(self):
@@ -35,6 +37,14 @@ class TreeherderPage(Base):
     @property
     def first_revision_date(self):
         return self.selenium.find_element(*self._first_resultset_datestamp_locator).text
+
+    @property
+    def revision_date(self):
+        return self.selenium.find_element(*self._single_resultset_datestamp_locator).text
+
+    @property
+    def results_count(self):
+        return len(self.selenium.find_elements(*self._results_locator))
 
     def open_next_unclassified_failure(self):
         el = self.selenium.find_element(*self._first_resultset_datestamp_locator)
@@ -58,7 +68,7 @@ class TreeherderPage(Base):
         Wait(self.selenium, self.timeout).until(
             EC.visibility_of_element_located(self._first_resultset_datestamp_locator))
         self.selenium.find_element(*self._first_resultset_datestamp_locator).click()
-        return SingleResultPage(self.base_url, self.selenium)
+        return self.selenium.find_element(*self._single_resultset_datestamp_locator)
 
 
 class LogviewerPage(Page):
@@ -73,22 +83,3 @@ class LogviewerPage(Page):
     @property
     def is_job_status_visible(self):
         return self.is_element_visible(self._job_header_locator)
-
-
-class SingleResultPage(Page):
-
-    _results_locator = (By.CSS_SELECTOR, '.result-set-bar')
-    _single_resultset_datestamp_locator = (By.CSS_SELECTOR, '.result-set-title-left > span:nth-child(2) > a:nth-child(1)')
-
-    def __init__(self, base_url, selenium):
-        Page.__init__(self, base_url, selenium)
-        Wait(self.selenium, self.timeout).until(
-            EC.visibility_of_element_located(self._single_resultset_datestamp_locator))
-
-    @property
-    def revision_date(self):
-        return self.selenium.find_element(*self._single_resultset_datestamp_locator).text
-
-    @property
-    def results_count(self):
-        return len(self.selenium.find_elements(*self._results_locator))
