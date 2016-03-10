@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait as Wait
 from selenium.webdriver.common.keys import Keys
 
 import expected
+import random
 from pages.base import Base
 from pages.page import Page
 from pages.page import PageRegion
@@ -15,13 +16,35 @@ from pages.page import PageRegion
 
 class TreeherderPage(Base):
 
-    _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
+    _active_watched_repo = (By.CSS_SELECTOR, '#watched-repo-navbar button.active')
+    _first_resultset_datestamp_locator = (By.CSS_SELECTOR, '.result-set .result-set-title-left > span a')
+    _job_details_actionbar_locator = (By.ID, 'job-details-actionbar')
+    _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span')
+    _logviewer_button_locator = (By.ID, 'logviewer-btn')
+    _repos_menu_locator = (By.ID, 'repoLabel')
+    _repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
+    _repos_specific_locator = (By.CSS_SELECTOR, '.dropdown-link a')
+    _results_locator = (By.CSS_SELECTOR, '.result-set-bar')
+    _resultset_locator = (By.CSS_SELECTOR, 'div.row.result-set')
+    _result_status_locator = (By.ID, 'job-details-panel')
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
 
     def wait_for_page_to_load(self):
         Wait(self.selenium, self.timeout).until(
             lambda s: self.unclassified_failure_count > 0)
         return self
+
+    @property
+    def active_watched_repo(self):
+        return self.selenium.find_element(*self._active_watched_repo).text
+
+    @property
+    def first_revision_date(self):
+        return self.selenium.find_element(*self._first_resultset_datestamp_locator).text
+
+    @property
+    def job_result_status(self):
+        return self.selenium.find_element(*self._job_result_status_locator).text
 
     @property
     def job_details(self):
@@ -36,6 +59,10 @@ class TreeherderPage(Base):
         return [self.ResultSet(self, el) for el in self.find_elements(self._result_sets_locator)]
 
     @property
+    def unchecked_repos(self):
+        return self.selenium.find_elements(*self._unchecked_repos_links_locator)
+
+    @property
     def unclassified_failure_count(self):
         return int(self.selenium.find_element(*self._unclassified_failure_count_locator).text)
 
@@ -45,11 +72,26 @@ class TreeherderPage(Base):
         el.send_keys('n')
         Wait(self.selenium, self.timeout).until(lambda s: self.job_details.job_result_status)
 
+    def open_logviewer(self):
+        Wait(self.selenium, self.timeout).until(
+            EC.visibility_of_element_located(self._job_details_actionbar_locator))
+        self.selenium.find_element(*self._first_resultset_datestamp_locator).send_keys('l')
+        return LogviewerPage(self.base_url, self.selenium)
+
     def open_perfherder_page(self):
         self.header.switch_page_using_dropdown()
 
         from perfherder import PerfherderPage
         return PerfherderPage(self.base_url, self.selenium).wait_for_page_to_load()
+
+    def open_repos_menu(self):
+        self.selenium.find_element(*self._repos_menu_locator).click()
+
+    def select_random_repo(self):
+        self.selenium.open_repos_menu()
+        random.choice(unchecked_repos_links).click()
+        self.wait_for_page_to_load
+        return self.active_watched_repo
 
     def pin_using_spacebar(self):
         el = self.selenium.find_element(*self._result_sets_locator)
