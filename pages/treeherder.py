@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait as Wait
 
 import expected
 import random
+
 from pages.base import Base
 from pages.page import Page
 
@@ -15,14 +16,16 @@ from pages.page import Page
 class TreeherderPage(Base):
 
     _active_watched_repo = (By.CSS_SELECTOR, '#watched-repo-navbar button.active')
+    _first_resultset_datestamp_locator = (By.CSS_SELECTOR, '.result-set .result-set-title-left > span a')
     _job_details_actionbar_locator = (By.ID, 'job-details-actionbar')
     _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span')
     _logviewer_button_locator = (By.ID, 'logviewer-btn')
     _repos_menu_locator = (By.ID, 'repoLabel')
-    _repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
     _repos_specific_locator = (By.CSS_SELECTOR, '.dropdown-link a')
+    _results_locator = (By.CSS_SELECTOR, '.result-set-bar')
     _resultset_locator = (By.CSS_SELECTOR, 'div.row.result-set')
     _result_status_locator = (By.ID, 'job-details-panel')
+    _unchecked_repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
 
     def wait_for_page_to_load(self):
@@ -37,6 +40,10 @@ class TreeherderPage(Base):
     @property
     def job_result_status(self):
         return self.selenium.find_element(*self._job_result_status_locator).text
+
+    @property
+    def unchecked_repos(self):
+        return self.selenium.find_elements(*self._unchecked_repos_links_locator)
 
     @property
     def unclassified_failure_count(self):
@@ -65,15 +72,9 @@ class TreeherderPage(Base):
 
     def select_random_repo(self):
         self.selenium.open_repos_menu()
-        random.choice(unchecked_repos_links).click()
-        self.wait_for_page_to_load
-        return self.active_watched_repo
+        random.choice(self.unchecked_repos_links).click()
+        self.wait_for_page_to_load()
 
-    def select_specific_repo(self, repo):
-        self.open_repos_menu()
-        self.selenium.find_element(By.LINK_TEXT, repo).click()
-        self.wait_for_page_to_load
-        return self.active_watched_repo
 
 class LogviewerPage(Page):
 

@@ -3,7 +3,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import pytest
-import random
 
 from pages.treeherder import TreeherderPage
 
@@ -16,8 +15,5 @@ class TestSwitchRepo:
         page = TreeherderPage(base_url, selenium).open()
         default_watched_repo = page.active_watched_repo
         new_repo = page.select_random_repo
-        assert not default_watched_repo == new_repo
 
-        """ Return to original repo """
-        specific_repo = page.select_specific_repo('mozilla-inbound')
-        assert default_watched_repo == specific_repo
+        assert default_watched_repo != new_repo
