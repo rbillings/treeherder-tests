@@ -11,7 +11,7 @@ class TestUnclassifiedJobs:
 
     @pytest.mark.nondestructive
     def test_unclassified_failure(self, base_url, selenium):
-        # Open resultset page and search for next unclassified failure
+        """ Open resultset page and search for next unclassified failure"""
         page = TreeherderPage(base_url, selenium).open()
         assert page.unclassified_failure_count > 0
 
@@ -21,7 +21,7 @@ class TestUnclassifiedJobs:
 
     @pytest.mark.nondestructive
     def test_open_unclassified_failure_log(self, base_url, selenium):
-        # Open the job log and verify there is content
+        """ Open the job log and verify there is content """
         treeherder_page = TreeherderPage(base_url, selenium).open()
         assert treeherder_page.unclassified_failure_count > 0
         treeherder_page.open_next_unclassified_failure()
