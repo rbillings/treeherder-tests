@@ -26,11 +26,9 @@ class TestPinJobs:
         assert 1 == len(page.pinboard.jobs)
         assert job.symbol == page.pinboard.selected_job.symbol
 
-
     def test_clear_pinboard(self, base_url, selenium):
         """ Open treeherder page, pin a job and then clear the pinboard"""
         page = TreeherderPage(base_url, selenium).open()
-
         page.select_next_job()
         page.result.pin_using_spacebar()
         assert 1 == page.pinboard.pins
