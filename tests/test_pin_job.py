@@ -8,7 +8,7 @@ from pages.treeherder import TreeherderPage
 class TestPinJobs:
 
     def test_pin_next_job(self, base_url, selenium):
-        # Open treeherder page, select next job and pin it
+        """ Open treeherder page, select next job and pin it"""
         page = TreeherderPage(base_url, selenium).open()
         current_job_title = page.select_next_job()
         assert 0 == page.pinboard.pins
