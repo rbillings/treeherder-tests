@@ -15,4 +15,4 @@ class TestSingleResult:
         first_revision_date = page.first_revision_date
         page.open_single_resultset()
         assert 1 == page.results_count
-        assert first_revision_date == page.revision_date
+        assert first_revision_date == page.first_revision_date
