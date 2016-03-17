@@ -16,7 +16,7 @@ class TestUnclassifiedJobs:
         assert page.unclassified_failure_count > 0
 
         page.open_next_unclassified_failure()
-        teststatus = page.job_result_status
+        teststatus = page.result.job_result_status
         assert teststatus in ['busted', 'testfailed', 'exception']
 
     @pytest.mark.nondestructive
@@ -25,5 +25,5 @@ class TestUnclassifiedJobs:
         treeherder_page = TreeherderPage(base_url, selenium).open()
         assert treeherder_page.unclassified_failure_count > 0
         treeherder_page.open_next_unclassified_failure()
-        logviewer_page = treeherder_page.open_logviewer()
+        logviewer_page = treeherder_page.job_details.open_logviewer()
         assert logviewer_page.is_job_status_visible
