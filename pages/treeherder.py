@@ -185,28 +185,6 @@ class TreeherderPage(Base):
                 return self._root.text
 
 
-    class Result(PageRegion):
-
-        _root_locator = (By.ID, 'info-panel-content')
-
-        _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span:nth-child(2)')
-        _result_set_locator = (By.CSS_SELECTOR, '#th-global-content .result-set')
-
-        def wait_for_page_to_load(self):
-            body = self.find_element(By.TAG_NAME, 'body')
-            self.wait.until(lambda s: 'loaded' in body.get_attribute('Result'))
-
-        @property
-        def job_result_status(self):
-            return self.selenium.find_element(*self._job_result_status_locator).text
-
-        def pin_using_spacebar(self):
-            el = self.selenium.find_element(*self._result_set_locator)
-            Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
-            el.send_keys(Keys.SPACE)
-            self.wait_for_page_to_load
-
-
 class LogviewerPage(Page):
 
     _job_header_locator = (By.CSS_SELECTOR, 'div.job-header')
