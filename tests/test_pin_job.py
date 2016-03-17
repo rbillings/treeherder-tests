@@ -4,6 +4,7 @@
 
 from pages.treeherder import TreeherderPage
 
+
 class TestPinJobs:
 
     def test_pin_next_job(self, base_url, selenium):

@@ -15,21 +15,6 @@ from pages.page import PageRegion
 
 class TreeherderPage(Base):
 
-    _clear_all_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .dropdown-menu li:nth-child(4)')
-    _first_resultset_datestamp_locator = (By.CSS_SELECTOR, '.result-set .result-set-title-left > span a')
-    _job_details_actionbar_locator = (By.ID, 'job-details-actionbar')
-    _job_details_pin_job_locator = (By.CSS_SELECTOR, '#job-details-actionbar .nav .nav li:nth-child(1) a')
-    _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span')
-    _logviewer_button_locator = (By.ID, 'logviewer-btn')
-    _open_save_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .dropdown-toggle')
-    _pinboard_count = (By.CSS_SELECTOR, '#pinned-job-list')
-    _pinboard_locator = (By.ID, 'pinboard-panel')
-    _pinboard_remove_job_locator = (By.CSS_SELECTOR, '#pinned-job-list .pinned-job-close-btn')
-    _pinned_job_title_locator = (By.CSS_SELECTOR, '.pinned-job.selected-job')
-    _resultset_locator = (By.CSS_SELECTOR, 'div.row.result-set')
-    _result_status_locator = (By.ID, 'job-details-panel')
-    _results_locator = (By.CSS_SELECTOR, '.result-set-bar')
-    _selected_job_title_locator = (By.CSS_SELECTOR, '.job-list .selected-job')
     _result_set_locator = (By.CSS_SELECTOR, '#th-global-content .result-set')
     _selected_job_title_locator = (By.CSS_SELECTOR, '.job-list .selected-job')
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
@@ -55,25 +40,11 @@ class TreeherderPage(Base):
     def unclassified_failure_count(self):
         return int(self.selenium.find_element(*self._unclassified_failure_count_locator).text)
 
-    @property
-    def first_revision_date(self):
-        return self.selenium.find_element(*self._first_resultset_datestamp_locator).text
-
-    @property
-    def results_count(self):
-        return len(self.selenium.find_elements(*self._results_locator))
-
     def open_next_unclassified_failure(self):
         el = self.selenium.find_element(*self._result_set_locator)
         Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
         el.send_keys('n')
         Wait(self.selenium, self.timeout).until(lambda s: self.result.job_result_status)
-
-    def open_logviewer(self):
-        Wait(self.selenium, self.timeout).until(
-            EC.visibility_of_element_located(self._job_details_actionbar_locator))
-        self.selenium.find_element(*self._first_resultset_datestamp_locator).send_keys('l')
-        return LogviewerPage(self.base_url, self.selenium)
 
     def open_perfherder_page(self):
         self.header.switch_page_using_dropdown()
@@ -81,18 +52,12 @@ class TreeherderPage(Base):
         from perfherder import PerfherderPage
         return PerfherderPage(self.base_url, self.selenium).wait_for_page_to_load()
 
-    def open_single_resultset(self):
-        Wait(self.selenium, self.timeout).until(
-            EC.visibility_of_element_located(self._first_resultset_datestamp_locator))
-        self.selenium.find_element(*self._first_resultset_datestamp_locator).click()
-
     def select_next_job(self):
         el = self.selenium.find_element(*self._result_set_locator)
         Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
         el.send_keys(Keys.ARROW_RIGHT)
         Wait(self.selenium, self.timeout).until(lambda s: self.result.job_result_status)
         return self.selenium.find_element(*self._selected_job_title_locator).get_attribute('title')
-
 
     class JobDetails(PageRegion):
 
@@ -113,7 +78,6 @@ class TreeherderPage(Base):
         def pin_job(self):
             self.wait_for_page_to_load
             self.selenium.find_element(*self._job_details_pin_job_locator).click()
-
 
     class Pinboard(PageRegion):
 
@@ -140,7 +104,6 @@ class TreeherderPage(Base):
         def clear_pinboard(self):
             self.selenium.find_element(*self._open_save_menu_locator).click()
             self.selenium.find_element(*self._clear_all_menu_locator).click()
-
 
     class Result(PageRegion):
 
