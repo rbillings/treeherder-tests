@@ -9,16 +9,16 @@ from pages.treeherder import TreeherderPage
 
 @pytest.mark.nondestructive
 def test_treeherder_dropdown(base_url, selenium):
-    """ Switch between Treeherder and Perfherder using header dropdown """
+    # Switch between Treeherder and Perfherder using header dropdown
     treeherder_page = TreeherderPage(base_url, selenium).open()
 
-    """ Verify Treeherder loads """
+    # Verify Treeherder loads
     assert treeherder_page.unclassified_failure_count > 0
 
-    """ Switch to Perfherder page """
+    # Switch to Perfherder page
     perfherder_page = treeherder_page.open_perfherder_page()
     assert perfherder_page.is_graph_chooser_displayed
 
-    """ Return to Treeherder page """
+    # Return to Treeherder page
     treeherder_page = perfherder_page.open_treeherder_page()
     assert treeherder_page.unclassified_failure_count > 0
