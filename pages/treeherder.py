@@ -100,7 +100,6 @@ class TreeherderPage(Base):
             self.wait_for_page_to_load
             self.selenium.find_element(*self._pin_job_locator).click()
 
-
     class Pinboard(PageRegion):
 
         _root_locator = (By.ID, 'pinboard-panel')
