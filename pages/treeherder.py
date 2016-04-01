@@ -100,6 +100,7 @@ class TreeherderPage(Base):
             self.wait_for_page_to_load
             self.selenium.find_element(*self._pin_job_locator).click()
 
+
     class Pinboard(PageRegion):
 
         _root_locator = (By.ID, 'pinboard-panel')
@@ -125,6 +126,7 @@ class TreeherderPage(Base):
         def clear_pinboard(self):
             self.selenium.find_element(*self._open_save_menu_locator).click()
             self.selenium.find_element(*self._clear_all_menu_locator).click()
+
 
 class LogviewerPage(Page):
 
