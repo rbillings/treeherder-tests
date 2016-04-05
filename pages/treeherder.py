@@ -67,7 +67,7 @@ class TreeherderPage(Base):
         el = self.selenium.find_element(*self._result_set_locator)
         Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
         el.send_keys(Keys.SPACE)
-        self.wait_for_page_to_load
+        self.wait_for_page_to_load()
 
     def select_next_job(self):
         el = self.selenium.find_element(*self._result_set_locator)
@@ -87,17 +87,11 @@ class TreeherderPage(Base):
         def job_result_status(self):
             return self.selenium.find_element(*self._job_result_status_locator).text
 
-        def wait_for_page_to_load(self):
-            body = self.find_element(By.TAG_NAME, 'body')
-            self.wait.until(lambda s: 'loaded' in body.get_attribute('JobDetails'))
-
         def open_logviewer(self):
-            self.wait_for_page_to_load
             self.selenium.find_element(*self._job_details_panel_locator).send_keys('l')
             return LogviewerPage(self.base_url, self.selenium)
 
         def pin_job(self):
-            self.wait_for_page_to_load
             self.selenium.find_element(*self._pin_job_locator).click()
 
     class Pinboard(PageRegion):
