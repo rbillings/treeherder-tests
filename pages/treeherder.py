@@ -67,7 +67,6 @@ class TreeherderPage(Base):
         el = self.selenium.find_element(*self._result_set_locator)
         Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
         el.send_keys(Keys.SPACE)
-        self.wait_for_page_to_load()
 
     def select_next_job(self):
         el = self.selenium.find_element(*self._result_set_locator)
@@ -99,7 +98,7 @@ class TreeherderPage(Base):
         _root_locator = (By.ID, 'pinboard-panel')
 
         _clear_all_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .dropdown-menu li:nth-child(4)')
-        _open_save_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls span.dropdown-toggle > span:nth-child(1)')
+        _open_save_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .save-btn-dropdown')
         _pinboard_jobs_locator = (By.CSS_SELECTOR, '#pinned-job-list .pinned-job')
         _pinboard_remove_job_locator = (By.CSS_SELECTOR, '#pinned-job-list .pinned-job-close-btn')
         _selected_job_title_locator = (By.CSS_SELECTOR, '.pinned-job.selected-job')
