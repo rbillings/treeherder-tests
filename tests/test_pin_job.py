@@ -36,7 +36,7 @@ class TestPinJobs:
         page.pinboard.clear_pinboard()
         assert page.pinboard.is_pinboard_open
         assert 0 == page.pinboard.pins
-    
+
     def test_pin_all_jobs(self, base_url, selenium):
         """ Open treeherder page, pin all jobs, confirm no more than 500 pins in pinboard"""
         page = TreeherderPage(base_url, selenium).open()
