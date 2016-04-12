@@ -66,8 +66,8 @@ class TreeherderPage(Base):
         from perfherder import PerfherderPage
         return PerfherderPage(self.base_url, self.selenium).wait_for_page_to_load()
 
-    def open_repos_menu(self):
-        self.selenium.find_element(*self._repos_menu_locator).click()
+    def pin_all_jobs(self):
+        self.selenium.find_element(*self._pin_all_jobs_locator).click()
 
     def pin_using_spacebar(self):
         el = self.selenium.find_element(*self._result_sets_locator)
@@ -163,16 +163,6 @@ class TreeherderPage(Base):
             el.click()
             Wait(self.selenium, self.timeout).until(lambda _: el.get_attribute('aria-expanded') == 'true')
             self.selenium.find_element(*self._clear_all_menu_locator).click()
-
-    def select_next_job(self):
-        el = self.selenium.find_element(*self._resultset_locator)
-        Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
-        el.send_keys(Keys.ARROW_RIGHT)
-        Wait(self.selenium, self.timeout).until(lambda s: self.job_result_status)
-        return self.selenium.find_element(*self._next_job_title).get_attribute('title')
-
-    def pinned_job_title(self):
-        return self.selenium.find_element(*self._next_job_title).get_attribute('title')
 
         class Job(PageRegion):
 
