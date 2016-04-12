@@ -19,6 +19,7 @@ from pages.page import PageRegion
 class TreeherderPage(Base):
 
     _active_watched_repo_locator = (By.CSS_SELECTOR, '#watched-repo-navbar button.active')
+    _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
     _unchecked_repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
@@ -83,6 +84,21 @@ class TreeherderPage(Base):
         el.send_keys(Keys.SPACE)
         Wait(self.selenium, self.timeout).until(lambda _: self.pinboard.is_pinboard_open)
 
+    def select_mozilla_central_repo(self):
+        # Fix me: https://github.com/mozilla/treeherder-tests/issues/43
+        self.open_repos_menu()
+        self.selenium.find_element(*self._mozilla_central_repo_locator).click()
+        return self.selenium.find_element(*self._active_watched_repo_locator).text
+
+    def select_random_repo(self):
+        self.open_repos_menu()
+        repo = random.choice(self.unchecked_repos)
+        repo_name = repo.text
+        repo.click()
+        Wait(self.selenium, self.timeout).until(
+            lambda s: self._active_watched_repo_locator == repo_name)
+        return repo_name
+
     class ResultSet(PageRegion):
 
         _datestamp_locator = (By.CSS_SELECTOR, '.result-set-title-left > span a')
@@ -109,15 +125,6 @@ class TreeherderPage(Base):
             @property
             def symbol(self):
                 return self._root.text
-
-    def select_random_repo(self):
-        self.open_repos_menu()
-        repo = random.choice(self.unchecked_repos)
-        repo_name = repo.text
-        repo.click()
-        Wait(self.selenium, self.timeout).until(
-            lambda s: self._active_watched_repo_locator == repo_name)
-        return repo_name
 
     class JobDetails(PageRegion):
 
