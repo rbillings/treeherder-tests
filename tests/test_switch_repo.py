@@ -11,8 +11,6 @@ from pages.treeherder import TreeherderPage
 def test_switch_repo(base_url, selenium):
     """ Switch to new active watched repo"""
     page = TreeherderPage(base_url, selenium).open()
-    mozilla_inbound = page.active_watched_repo
-    assert mozilla_inbound == "mozilla-inbound"
-    mozilla_central = page.select_mozilla_central_repo()
-    assert mozilla_central == "mozilla-central"
-    assert mozilla_inbound != mozilla_central
+    assert 'mozilla-inbound' == page.active_watched_repo
+    page.select_mozilla_central_repo()
+    assert 'mozilla-central' == page.active_watched_repo

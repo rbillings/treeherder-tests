@@ -35,10 +35,6 @@ class TreeherderPage(Base):
         return self.selenium.find_element(*self._active_watched_repo_locator).text
 
     @property
-    def first_revision_date(self):
-        return self.selenium.find_element(*self._first_resultset_datestamp_locator).text
-
-    @property
     def job_details(self):
         return self.JobDetails(self)
 
@@ -73,11 +69,6 @@ class TreeherderPage(Base):
     def open_repos_menu(self):
         self.selenium.find_element(*self._repos_menu_locator).click()
 
-    def open_single_resultset(self):
-        Wait(self.selenium, self.timeout).until(
-            EC.visibility_of_element_located(self._first_resultset_datestamp_locator))
-        self.selenium.find_element(*self._first_resultset_datestamp_locator).click()
-
     def pin_using_spacebar(self):
         el = self.selenium.find_element(*self._result_sets_locator)
         Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
@@ -88,7 +79,6 @@ class TreeherderPage(Base):
         # Fix me: https://github.com/mozilla/treeherder-tests/issues/43
         self.open_repos_menu()
         self.selenium.find_element(*self._mozilla_central_repo_locator).click()
-        return self.selenium.find_element(*self._active_watched_repo_locator).text
 
     def select_random_repo(self):
         self.open_repos_menu()
@@ -175,10 +165,9 @@ class TreeherderPage(Base):
 
         class Job(PageRegion):
 
-            def click(self):
-                self._root.click()
-                Wait(self.selenium, self.timeout).until(
-                    lambda _: self.page.job_details.job_result_status)
+            @property
+            def is_selected(self):
+                return 'selected-job' in self._root.get_attribute('class')
 
             @property
             def symbol(self):
