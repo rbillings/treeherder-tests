@@ -18,11 +18,7 @@ from pages.page import PageRegion
 
 class TreeherderPage(Base):
 
-    _active_watched_repo_locator = (By.CSS_SELECTOR, '#watched-repo-navbar button.active')
-    _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
-    _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
-    _unchecked_repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
 
     def wait_for_page_to_load(self):
@@ -66,9 +62,6 @@ class TreeherderPage(Base):
         from perfherder import PerfherderPage
         return PerfherderPage(self.base_url, self.selenium).wait_for_page_to_load()
 
-    def pin_all_jobs(self):
-        self.selenium.find_element(*self._pin_all_jobs_locator).click()
-
     def pin_using_spacebar(self):
         el = self.selenium.find_element(*self._result_sets_locator)
         Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
@@ -94,6 +87,7 @@ class TreeherderPage(Base):
 
         _datestamp_locator = (By.CSS_SELECTOR, '.result-set-title-left > span a')
         _jobs_locator = (By.CLASS_NAME, 'job-btn')
+        _pin_all_jobs_locator = (By.CSS_SELECTOR, '.result-set .glyphicon-pushpin')
 
         @property
         def datestamp(self):
@@ -102,6 +96,9 @@ class TreeherderPage(Base):
         @property
         def jobs(self):
             return [self.Job(self.page, root=el) for el in self.find_elements(self._jobs_locator)]
+
+        def pin_all_jobs(self):
+            self.selenium.find_element(*self._pin_all_jobs_locator).click()
 
         def view(self):
             return self.find_element(self._datestamp_locator).click()

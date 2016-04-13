@@ -8,7 +8,7 @@ from pages.treeherder import TreeherderPage
 class TestPinJobs:
 
     def test_pin_job(self, base_url, selenium):
-        # Open treeherder page, select first job and pin it
+        """Open treeherder page, select first job and pin it"""
         page = TreeherderPage(base_url, selenium).open()
         job = page.result_sets[0].jobs[0]
         job.click()
@@ -18,7 +18,7 @@ class TestPinJobs:
         assert job.symbol == page.pinboard.selected_job.symbol
 
     def test_pin_job_from_job_details(self, base_url, selenium):
-        """ Open treeherder page, select next job, pin it by the logviewer icon"""
+        """Open treeherder page, select first job, pin it by the pin icon"""
         page = TreeherderPage(base_url, selenium).open()
         job = page.result_sets[0].jobs[0]
         job.click()
@@ -28,7 +28,7 @@ class TestPinJobs:
         assert job.symbol == page.pinboard.selected_job.symbol
 
     def test_clear_pinboard(self, base_url, selenium):
-        # Open treeherder page, pin a job and then clear the pinboard
+        """Open treeherder page, pin a job and then clear the pinboard"""
         page = TreeherderPage(base_url, selenium).open()
         page.result_sets[0].jobs[0].click()
         page.pin_using_spacebar()
@@ -38,7 +38,7 @@ class TestPinJobs:
         assert 0 == len(page.pinboard.jobs)
 
     def test_pin_all_jobs(self, base_url, selenium):
-        """ Open treeherder page, pin all jobs, confirm no more than 500 pins in pinboard"""
+        """Open treeherder page, pin all jobs, confirm no more than 500 pins in pinboard"""
         page = TreeherderPage(base_url, selenium).open()
-        page.pin_all_jobs()
+        page.result_sets[0].pin_all_jobs()
         assert 0 < len(page.pinboard.jobs) <= 500
