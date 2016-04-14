@@ -18,7 +18,11 @@ from pages.page import PageRegion
 
 class TreeherderPage(Base):
 
+    _active_watched_repo_locator = (By.CSS_SELECTOR, '#watched-repo-navbar button.active')
+    _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
+    _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
+    _unchecked_repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
 
     def wait_for_page_to_load(self):
@@ -61,6 +65,9 @@ class TreeherderPage(Base):
 
         from perfherder import PerfherderPage
         return PerfherderPage(self.base_url, self.selenium).wait_for_page_to_load()
+
+    def open_repos_menu(self):
+        self.selenium.find_element(*self._repos_menu_locator).click()
 
     def pin_using_spacebar(self):
         el = self.selenium.find_element(*self._result_sets_locator)
