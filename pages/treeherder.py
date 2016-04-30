@@ -134,6 +134,11 @@ class TreeherderPage(Base):
 
         def open_logviewer(self):
             self.selenium.find_element(*self._job_details_panel_locator).send_keys('l')
+            window_handles = self.selenium.window_handles
+            isReachedRightPage = False
+            for handle in window_handles:
+                self.selenium.switch_to.window(handle)
+                self.selenium.implicitly_wait(1)
             return LogviewerPage(self.base_url, self.selenium)
 
         def pin_job(self):
@@ -186,7 +191,7 @@ class LogviewerPage(Page):
     def __init__(self, base_url, selenium):
         Page.__init__(self, base_url, selenium)
         Wait(self.selenium, self.timeout).until(
-            expected.window_with_title('Log for'))
+            lambda s: self.is_element_visible(self._job_header_locator))
 
     @property
     def is_job_status_visible(self):
