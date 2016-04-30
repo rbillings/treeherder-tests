@@ -9,8 +9,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait as Wait
 from selenium.webdriver.common.keys import Keys
 
-import expected
-
 from pages.base import Base
 from pages.page import Page
 from pages.page import PageRegion
@@ -135,7 +133,6 @@ class TreeherderPage(Base):
         def open_logviewer(self):
             self.selenium.find_element(*self._job_details_panel_locator).send_keys('l')
             window_handles = self.selenium.window_handles
-            isReachedRightPage = False
             for handle in window_handles:
                 self.selenium.switch_to.window(handle)
                 self.selenium.implicitly_wait(1)
