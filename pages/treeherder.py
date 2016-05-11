@@ -92,7 +92,7 @@ class TreeherderPage(Base):
 
         _datestamp_locator = (By.CSS_SELECTOR, '.result-set-title-left > span a')
         _jobs_locator = (By.CLASS_NAME, 'job-btn')
-        _pin_all_jobs_locator = (By.CLASS_NAME, 'glyphicon-pushpin')
+        _pin_all_jobs_locator = (By.CLASS_NAME, 'pin-all-jobs-btn')
 
         @property
         def datestamp(self):
@@ -123,7 +123,7 @@ class TreeherderPage(Base):
 
         _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span:nth-child(2)')
         _logviewer_button_locator = (By.ID, 'logviewer-btn')
-        _pin_job_locator = (By.CSS_SELECTOR, '#job-details-actionbar .nav .nav li:nth-child(1) a')
+        _pin_job_locator = (By.ID, 'pin-job-btn')
         _job_details_panel_locator = (By.ID, 'job-details-panel')
 
         @property
