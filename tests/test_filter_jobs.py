@@ -17,4 +17,4 @@ def test_filter_jobs(base_url, selenium):
 
     """Clear filter results"""
     page.filter_clear()
-    assert not "&filter-searchStr=Linux" in page.selenium.current_url
+    assert "&filter-searchStr=Linux" not in page.selenium.current_url
