@@ -17,7 +17,9 @@ from pages.page import PageRegion
 class TreeherderPage(Base):
 
     _active_watched_repo_locator = (By.CSS_SELECTOR, '#watched-repo-navbar button.active')
+    _clear_filter_locator = (By.ID, 'quick-filter-clear-button')
     _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
+    _quick_filter_locator = (By.ID, 'quick-filter')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
     _unchecked_repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
@@ -51,6 +53,15 @@ class TreeherderPage(Base):
     @property
     def unclassified_failure_count(self):
         return int(self.selenium.find_element(*self._unclassified_failure_count_locator).text)
+
+    def filter_clear(self):
+        self.selenium.find_element(*self._clear_filter_locator).click()
+
+    def filter_search(self, term):
+        el = self.selenium.find_element(*self._quick_filter_locator)
+        el.send_keys(term)
+        el.send_keys(Keys.RETURN)
+        self.wait_for_page_to_load()
 
     def open_next_unclassified_failure(self):
         el = self.selenium.find_element(*self._result_sets_locator)
