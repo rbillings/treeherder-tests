@@ -10,7 +10,7 @@ from pages.treeherder import TreeherderPage
 @pytest.mark.nondestructive
 def test_unclassified_failure(base_url, selenium):
     """Open resultset page and search for next unclassified failure"""
-    page = TreeherderPage(base_url, selenium).open()
+    page = TreeherderPage(selenium, base_url).open()
     assert page.unclassified_failure_count > 0
 
     page.open_next_unclassified_failure()
@@ -21,7 +21,7 @@ def test_unclassified_failure(base_url, selenium):
 @pytest.mark.nondestructive
 def test_open_unclassified_failure_log(base_url, selenium):
     """Open the job log and verify there is content"""
-    treeherder_page = TreeherderPage(base_url, selenium).open()
+    treeherder_page = TreeherderPage(selenium, base_url).open()
     assert treeherder_page.unclassified_failure_count > 0
     treeherder_page.open_next_unclassified_failure()
     logviewer_page = treeherder_page.job_details.open_logviewer()

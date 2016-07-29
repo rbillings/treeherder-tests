@@ -3,12 +3,9 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from bidpom import BIDPOM
-
+from pypom import Page, Region
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait as Wait
-
-from pages.page import Page, PageRegion
 
 
 class Base(Page):
@@ -17,7 +14,7 @@ class Base(Page):
     def header(self):
         return self.Header(self)
 
-    class Header(PageRegion):
+    class Header(Region):
 
         _root_locator = (By.ID, 'th-global-navbar')
         _login_locator = (By.CSS_SELECTOR, 'a.btn > span:nth-child(1)')
@@ -27,18 +24,17 @@ class Base(Page):
 
         @property
         def is_user_logged_in(self):
-            return self.is_element_visible(self._logout_icon_locator)
+            return self.is_element_displayed(*self._logout_icon_locator)
 
         def click_login(self):
-            self.selenium.find_element(*self._login_locator).click()
+            self.find_element(*self._login_locator).click()
 
         def login(self, email, password):
             self.click_login()
             browser_id = BIDPOM(self.selenium, self.timeout)
             browser_id.sign_in(email, password)
-            Wait(self.selenium, self.timeout).until(
-                EC.visibility_of_element_located(self._logout_icon_locator))
+            self.wait.until(EC.visibility_of_element_located(self._logout_icon_locator))
 
         def switch_page_using_dropdown(self):
-            self.find_element(self._dropdown_menu_locator).click()
-            self.find_element(self._dropdown_menu_switch_page_locator).click()
+            self.find_element(*self._dropdown_menu_locator).click()
+            self.find_element(*self._dropdown_menu_switch_page_locator).click()

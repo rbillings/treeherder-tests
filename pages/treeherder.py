@@ -4,14 +4,12 @@
 
 import random
 
+from pypom import Page, Region
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait as Wait
 from selenium.webdriver.common.keys import Keys
 
 from pages.base import Base
-from pages.page import Page
-from pages.page import PageRegion
 
 
 class TreeherderPage(Base):
@@ -26,13 +24,12 @@ class TreeherderPage(Base):
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
 
     def wait_for_page_to_load(self):
-        Wait(self.selenium, self.timeout).until(
-            lambda s: self.unclassified_failure_count > 0)
+        self.wait.until(lambda s: self.unclassified_failure_count > 0)
         return self
 
     @property
     def active_watched_repo(self):
-        return self.selenium.find_element(*self._active_watched_repo_locator).text
+        return self.find_element(*self._active_watched_repo_locator).text
 
     @property
     def job_details(self):
@@ -44,15 +41,15 @@ class TreeherderPage(Base):
 
     @property
     def result_sets(self):
-        return [self.ResultSet(self, el) for el in self.find_elements(self._result_sets_locator)]
+        return [self.ResultSet(self, el) for el in self.find_elements(*self._result_sets_locator)]
 
     @property
     def unchecked_repos(self):
-        return self.selenium.find_elements(*self._unchecked_repos_links_locator)
+        return self.find_elements(*self._unchecked_repos_links_locator)
 
     @property
     def unclassified_failure_count(self):
-        return int(self.selenium.find_element(*self._unclassified_failure_count_locator).text)
+        return int(self.find_element(*self._unclassified_failure_count_locator).text)
 
     def filter_clear(self):
         self.selenium.find_element(*self._clear_filter_locator).click()
@@ -64,30 +61,30 @@ class TreeherderPage(Base):
         self.wait_for_page_to_load()
 
     def open_next_unclassified_failure(self):
-        el = self.selenium.find_element(*self._result_sets_locator)
-        Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
+        el = self.find_element(*self._result_sets_locator)
+        self.wait.until(EC.visibility_of(el))
         el.send_keys('n')
-        Wait(self.selenium, self.timeout).until(lambda s: self.job_details.job_result_status)
+        self.wait.until(lambda s: self.job_details.job_result_status)
 
     def open_perfherder_page(self):
         self.header.switch_page_using_dropdown()
 
         from perfherder import PerfherderPage
-        return PerfherderPage(self.base_url, self.selenium).wait_for_page_to_load()
+        return PerfherderPage(self.selenium, self.base_url).wait_for_page_to_load()
 
     def open_repos_menu(self):
-        self.selenium.find_element(*self._repos_menu_locator).click()
+        self.find_element(*self._repos_menu_locator).click()
 
     def pin_using_spacebar(self):
-        el = self.selenium.find_element(*self._result_sets_locator)
-        Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
+        el = self.find_element(*self._result_sets_locator)
+        self.wait.until(EC.visibility_of(el))
         el.send_keys(Keys.SPACE)
-        Wait(self.selenium, self.timeout).until(lambda _: self.pinboard.is_pinboard_open)
+        self.wait.until(lambda _: self.pinboard.is_pinboard_open)
 
     def select_mozilla_central_repo(self):
         # Fix me: https://github.com/mozilla/treeherder-tests/issues/43
         self.open_repos_menu()
-        self.selenium.find_element(*self._mozilla_central_repo_locator).click()
+        self.find_element(*self._mozilla_central_repo_locator).click()
         self.wait_for_page_to_load()
 
     def select_random_repo(self):
@@ -95,11 +92,10 @@ class TreeherderPage(Base):
         repo = random.choice(self.unchecked_repos)
         repo_name = repo.text
         repo.click()
-        Wait(self.selenium, self.timeout).until(
-            lambda s: self._active_watched_repo_locator == repo_name)
+        self.wait.until(lambda s: self._active_watched_repo_locator == repo_name)
         return repo_name
 
-    class ResultSet(PageRegion):
+    class ResultSet(Region):
 
         _add_new_job_locator = (By.CSS_SELECTOR, '.open ul > li a')
         _datestamp_locator = (By.CSS_SELECTOR, '.result-set-title-left > span a')
@@ -111,46 +107,43 @@ class TreeherderPage(Base):
 
         @property
         def datestamp(self):
-            return self.find_element(self._datestamp_locator).text
+            return self.find_element(*self._datestamp_locator).text
 
         @property
         def jobs(self):
-            return [self.Job(self.page, root=el) for el in self.find_elements(self._jobs_locator)]
+            return [self.Job(self.page, root=el) for el in self.find_elements(*self._jobs_locator)]
 
         @property
         def runnable_jobs(self):
-            return [self.Job(self.page, root=el) for el in self.find_elements(self._runnable_jobs_locator)]
+            return [self.Job(self.page, root=el) for el in self.find_elements(*self._runnable_jobs_locator)]
 
         def add_new_jobs(self):
-            self.find_element(self._dropdown_toggle_locator).click()
-            self.find_element(self._add_new_job_locator).click()
-            Wait(self.selenium, self.timeout).until(
-                lambda s: self.is_element_visible(self._runnable_jobs_locator))
+            self.find_element(*self._dropdown_toggle_locator).click()
+            self.find_element(*self._add_new_job_locator).click()
+            self.wait.until(lambda s: self.is_element_displayed(*self._runnable_jobs_locator))
 
         def hide_runnable_jobs(self):
-            self.find_element(self._dropdown_toggle_locator).click()
-            self.find_element(self._hide_runnable_jobs_locator).click()
-            Wait(self.selenium, self.timeout).until(
-                lambda s: not self.is_element_visible(self._runnable_jobs_locator))
+            self.find_element(*self._dropdown_toggle_locator).click()
+            self.find_element(*self._hide_runnable_jobs_locator).click()
+            self.wait.until(lambda s: not self.is_element_displayed(*self._runnable_jobs_locator))
 
         def pin_all_jobs(self):
-            return self.find_element(self._pin_all_jobs_locator).click()
+            return self.find_element(*self._pin_all_jobs_locator).click()
 
         def view(self):
-            return self.find_element(self._datestamp_locator).click()
+            return self.find_element(*self._datestamp_locator).click()
 
-        class Job(PageRegion):
+        class Job(Region):
 
             def click(self):
-                self._root.click()
-                Wait(self.selenium, self.timeout).until(
-                    lambda _: self.page.job_details.job_result_status)
+                self.root.click()
+                self.wait.until(lambda _: self.page.job_details.job_result_status)
 
             @property
             def symbol(self):
-                return self._root.text
+                return self.root.text
 
-    class JobDetails(PageRegion):
+    class JobDetails(Region):
 
         _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span:nth-child(2)')
         _logviewer_button_locator = (By.ID, 'logviewer-btn')
@@ -159,25 +152,23 @@ class TreeherderPage(Base):
 
         @property
         def job_result_status(self):
-            return self.selenium.find_element(*self._job_result_status_locator).text
+            return self.find_element(*self._job_result_status_locator).text
 
         def open_logviewer(self):
-            self.selenium.find_element(*self._job_details_panel_locator).send_keys('l')
+            self.find_element(*self._job_details_panel_locator).send_keys('l')
             window_handles = self.selenium.window_handles
             for handle in window_handles:
                 self.selenium.switch_to.window(handle)
-                self.selenium.implicitly_wait(1)
-            return LogviewerPage(self.base_url, self.selenium)
+            return LogviewerPage(self.selenium, self.page.base_url).wait_for_page_to_load()
 
         def pin_job(self):
-            el = self.selenium.find_element(*self._pin_job_locator)
-            Wait(self.selenium, self.timeout).until(EC.visibility_of(el))
+            el = self.find_element(*self._pin_job_locator)
+            self.wait.until(EC.visibility_of(el))
             el.click()
 
-    class Pinboard(PageRegion):
+    class Pinboard(Region):
 
         _root_locator = (By.ID, 'pinboard-panel')
-
         _clear_all_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .dropdown-menu li:nth-child(4)')
         _open_save_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .save-btn-dropdown')
         _jobs_locator = (By.CLASS_NAME, 'pinned-job')
@@ -189,38 +180,37 @@ class TreeherderPage(Base):
 
         @property
         def jobs(self):
-            return [self.Job(self.page, el) for el in self.find_elements(self._jobs_locator)]
+            return [self.Job(self.page, el) for el in self.find_elements(*self._jobs_locator)]
 
         @property
         def is_pinboard_open(self):
-            return self.is_element_visible(self._root_locator)
+            return self.root.is_displayed()
 
         def clear_pinboard(self):
-            el = self.selenium.find_element(*self._open_save_menu_locator)
+            el = self.find_element(*self._open_save_menu_locator)
             el.click()
-            Wait(self.selenium, self.timeout).until(lambda _: el.get_attribute('aria-expanded') == 'true')
-            self.selenium.find_element(*self._clear_all_menu_locator).click()
+            self.wait.until(lambda _: el.get_attribute('aria-expanded') == 'true')
+            self.find_element(*self._clear_all_menu_locator).click()
 
-        class Job(PageRegion):
+        class Job(Region):
 
             @property
             def is_selected(self):
-                return 'selected-job' in self._root.get_attribute('class')
+                return 'selected-job' in self.root.get_attribute('class')
 
             @property
             def symbol(self):
-                return self._root.text
+                return self.root.text
 
 
 class LogviewerPage(Page):
 
     _job_header_locator = (By.CSS_SELECTOR, 'div.job-header')
 
-    def __init__(self, base_url, selenium):
-        Page.__init__(self, base_url, selenium)
-        Wait(self.selenium, self.timeout).until(
-            lambda s: self.is_element_visible(self._job_header_locator))
+    def wait_for_page_to_load(self):
+        self.wait.until(lambda s: self.is_job_status_visible)
+        return self
 
     @property
     def is_job_status_visible(self):
-        return self.is_element_visible(self._job_header_locator)
+        return self.is_element_displayed(*self._job_header_locator)

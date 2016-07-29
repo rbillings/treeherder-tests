@@ -10,7 +10,7 @@ from pages.treeherder import TreeherderPage
 @pytest.mark.nondestructive
 def test_treeherder_dropdown(base_url, selenium):
     """Switch between Treeherder and Perfherder using header dropdown"""
-    treeherder_page = TreeherderPage(base_url, selenium).open()
+    treeherder_page = TreeherderPage(selenium, base_url).open()
 
     # Verify Treeherder loads
     assert treeherder_page.unclassified_failure_count > 0

@@ -9,7 +9,7 @@ from pages.treeherder import TreeherderPage
 
 @pytest.mark.nondestructive
 def test_add_new_jobs(base_url, selenium):
-    page = TreeherderPage(base_url, selenium).open()
+    page = TreeherderPage(selenium, base_url).open()
     assert len(page.result_sets) >= 1
     page.result_sets[0].view()
     page.result_sets[0].add_new_jobs()
@@ -18,7 +18,7 @@ def test_add_new_jobs(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_hide_runnable_jobs(base_url, selenium):
-    page = TreeherderPage(base_url, selenium).open()
+    page = TreeherderPage(selenium, base_url).open()
     assert len(page.result_sets) >= 1
     page.result_sets[0].view()
     page.result_sets[0].add_new_jobs()
