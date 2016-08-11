@@ -10,11 +10,9 @@ from pages.treeherder import TreeherderPage
 @pytest.mark.nondestructive
 def test_filter_jobs(base_url, selenium):
     """Open resultset page and filter for platform"""
-    term = u'Linux'
-    page = TreeherderPage(base_url, selenium).open()
-    page.filter_search(term)
-    assert "&filter-searchStr=Linux" in page.selenium.current_url
+    page = TreeherderPage(selenium, base_url).open()
+    build = page.result_sets[0].builds[0].platform_name
+    platform = 'Linux'
+    page.filter_by(platform)
 
-    """Clear filter results"""
-    page.filter_clear()
-    assert "&filter-searchStr=Linux" not in page.selenium.current_url
+    assert platform in page.result_sets[0].builds[0].platform_name
