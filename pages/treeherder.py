@@ -198,9 +198,6 @@ class TreeherderPage(Base):
         _runnable_jobs_locator = (By.CSS_SELECTOR, '.runnable-job-btn.filter-shown')
         _set_bottom_of_range_locator = (By.CSS_SELECTOR, '.open ul > li:nth-child(8) > a')
         _set_top_of_range_locator = (By.CSS_SELECTOR, '.open ul > li:nth-child(7) > a')
-        _test_busted_job_title_locator = (By.CSS_SELECTOR, 'span.group-job-list .btn-purple')
-        _test_exception_job_title_locator = (By.CSS_SELECTOR, 'span.group-job-list .btn-red')
-        _testfailed_job_title_locator = (By.CSS_SELECTOR, 'span.group-job-list .btn-orange')
 
         @property
         def builds(self):
@@ -221,10 +218,6 @@ class TreeherderPage(Base):
         @property
         def runnable_jobs(self):
             return [self.Job(self.page, root=el) for el in self.find_elements(*self._runnable_jobs_locator)]
-
-        @property
-        def testfailed_job_title(self):
-            return self.find_element(*self._testfailed_job_title_locator).get_attribute('title')
 
         def add_new_jobs(self):
             self.find_element(*self._dropdown_toggle_locator).click()
@@ -264,9 +257,15 @@ class TreeherderPage(Base):
 
         class Job(Region):
 
+            _jobs_locator = (By.CLASS_NAME, '.job-btn')
+
             @property
             def symbol(self):
                 return self.root.text
+
+            @property
+            def title(self):
+                return self.find_element(*self._jobs_locator).get_attribute('title')
 
             def click(self):
                 self.root.click()
