@@ -12,7 +12,6 @@ def test_unclassified_failure(base_url, selenium):
     """Open resultset page and search for next unclassified failure"""
     page = TreeherderPage(selenium, base_url).open()
     assert page.unclassified_failure_count > 0
-
     page.open_next_unclassified_failure()
     teststatus = page.job_details.job_result_status
     assert teststatus in ['busted', 'testfailed', 'exception']
@@ -26,3 +25,12 @@ def test_open_unclassified_failure_log(base_url, selenium):
     treeherder_page.open_next_unclassified_failure()
     logviewer_page = treeherder_page.job_details.open_logviewer()
     assert logviewer_page.is_job_status_visible
+
+@pytest.mark.nondestructive
+def test_view_unclassified_jobs(base_url, selenium):
+    page = TreeherderPage(selenium, base_url).open()
+    assert len(page.result_sets[0].testfailed_job_title) >= 0
+
+    page.filter_unclassified_jobs()
+    jobstatus = page.result_sets[0].testfailed_job_title
+    assert 'testfailed' in jobstatus

@@ -130,6 +130,9 @@ class TreeherderPage(Base):
         self.find_element(*self._next_fifty_locator).click()
         self.wait.until(lambda s: len(self.result_sets) == 60)
 
+    def filter_unclassified_jobs(self):
+        return self.find_element(*self._unclassified_failure_filter_locator).click()
+
     def open_next_unclassified_failure(self):
         el = self.find_element(*self._result_sets_locator)
         self.wait.until(EC.visibility_of(el))
@@ -195,6 +198,10 @@ class TreeherderPage(Base):
         _runnable_jobs_locator = (By.CSS_SELECTOR, '.runnable-job-btn.filter-shown')
         _set_bottom_of_range_locator = (By.CSS_SELECTOR, '.open ul > li:nth-child(8) > a')
         _set_top_of_range_locator = (By.CSS_SELECTOR, '.open ul > li:nth-child(7) > a')
+        _test_busted_job_title_locator = (By.CSS_SELECTOR, 'span.group-job-list .btn-purple')
+        _test_exception_job_title_locator = (By.CSS_SELECTOR, 'span.group-job-list .btn-red')
+        _testfailed_job_title_locator = (By.CSS_SELECTOR, 'span.group-job-list .btn-orange')
+
 
         @property
         def builds(self):
@@ -215,6 +222,10 @@ class TreeherderPage(Base):
         @property
         def runnable_jobs(self):
             return [self.Job(self.page, root=el) for el in self.find_elements(*self._runnable_jobs_locator)]
+
+        @property
+        def testfailed_job_title(self):
+            return self.find_element(*self._testfailed_job_title_locator).get_attribute('title')
 
         def add_new_jobs(self):
             self.find_element(*self._dropdown_toggle_locator).click()
