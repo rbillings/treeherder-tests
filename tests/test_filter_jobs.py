@@ -17,7 +17,6 @@ def test_filter_jobs(base_url, selenium):
     page.filter_by(platform)
     filtered_builds = list(page.all_builds)
 
-
     buildname = page.result_sets[0].builds[0].platform_name
     assert platform in buildname
 
