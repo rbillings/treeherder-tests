@@ -26,6 +26,7 @@ def test_open_unclassified_failure_log(base_url, selenium):
     logviewer_page = treeherder_page.job_details.open_logviewer()
     assert logviewer_page.is_job_status_visible
 
+
 @pytest.mark.nondestructive
 def test_view_unclassified_jobs(base_url, selenium):
     page = TreeherderPage(selenium, base_url).open()

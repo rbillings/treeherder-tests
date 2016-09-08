@@ -202,7 +202,6 @@ class TreeherderPage(Base):
         _test_exception_job_title_locator = (By.CSS_SELECTOR, 'span.group-job-list .btn-red')
         _testfailed_job_title_locator = (By.CSS_SELECTOR, 'span.group-job-list .btn-orange')
 
-
         @property
         def builds(self):
             return [self.Build(self.page, root=el) for el in self.find_elements(*self._platform_locator)]
