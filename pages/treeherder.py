@@ -72,6 +72,7 @@ class TreeherderPage(Base):
     def get_next_fifty_results(self):
         self.find_element(*self._next_fifty_locator).click()
         self.wait.until(lambda s: len(self.result_sets) == 60)
+        return self
 
     def clear_filter(self):
         self.selenium.find_element(*self._clear_filter_locator).click()
