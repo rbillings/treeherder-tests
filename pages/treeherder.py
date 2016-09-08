@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import itertools
 import random
 
 from pypom import Page, Region
@@ -17,9 +18,6 @@ class TreeherderPage(Base):
     _active_watched_repo_locator = (By.CSS_SELECTOR, '#watched-repo-navbar button.active')
     _clear_filter_locator = (By.ID, 'quick-filter-clear-button')
     _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
-    _next_ten_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(1)')
-    _next_twenty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(2)')
-    _next_fifty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(3)')
     _quick_filter_locator = (By.ID, 'quick-filter')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
@@ -33,6 +31,10 @@ class TreeherderPage(Base):
     @property
     def active_watched_repo(self):
         return self.find_element(*self._active_watched_repo_locator).text
+
+    @property
+    def all_builds(self):
+        return list(itertools.chain.from_iterable([r.builds for r in self.result_sets]))
 
     @property
     def job_details(self):
@@ -53,21 +55,6 @@ class TreeherderPage(Base):
     @property
     def unclassified_failure_count(self):
         return int(self.find_element(*self._unclassified_failure_count_locator).text)
-
-    def get_next_ten_results(self):
-        self.find_element(*self._next_ten_locator).click()
-        self.wait.until(lambda s: len(self.result_sets) == 20)
-        return self
-
-    def get_next_twenty_results(self):
-        self.find_element(*self._next_twenty_locator).click()
-        self.wait.until(lambda s: len(self.result_sets) == 30)
-        return self
-
-    def get_next_fifty_results(self):
-        self.find_element(*self._next_fifty_locator).click()
-        self.wait.until(lambda s: len(self.result_sets) == 60)
-        return self
 
     def clear_filter(self):
         self.selenium.find_element(*self._clear_filter_locator).click()
