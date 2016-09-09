@@ -31,10 +31,11 @@ def test_open_unclassified_failure_log(base_url, selenium):
 def test_view_unclassified_jobs(base_url, selenium):
     page = TreeherderPage(selenium, base_url).open()
     all_jobs = list(page.all_jobs)
-
+    name = page.result_sets[0].displayed_job_titles
+    assert name == 'hello'
     page.filter_unclassified_jobs()
     filtered_jobs = list(page.all_jobs)
-    jobstatus = page.result_sets[0].jobs[0].title
+    jobstatus = page.result_sets[0].jobs[0].displayed_job_title
 
     assert not all_jobs == filtered_jobs
     assert 'testfailed' in jobstatus

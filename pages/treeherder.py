@@ -131,7 +131,9 @@ class TreeherderPage(Base):
         self.wait.until(lambda s: len(self.result_sets) == 60)
 
     def filter_unclassified_jobs(self):
-        return self.find_element(*self._unclassified_failure_filter_locator).click()
+        self.find_element(*self._unclassified_failure_filter_locator).click()
+        self.wait.until(lambda s: len(self.result_sets) == 10)
+        return self
 
     def open_next_unclassified_failure(self):
         el = self.find_element(*self._result_sets_locator)
@@ -188,6 +190,7 @@ class TreeherderPage(Base):
 
         _add_new_job_locator = (By.CSS_SELECTOR, '.open ul > li a')
         _datestamp_locator = (By.CSS_SELECTOR, '.result-set-title-left > span a')
+        _displayed_job_title_locator = (By.CSS_SELECTOR, '.job-btn.filter-shown')
         _dropdown_toggle_locator = (By.CLASS_NAME, 'dropdown-toggle')
         _expanded_group_content_locator = (By.CSS_SELECTOR, '.group-job-list[style="display: inline;"]')
         _group_content_locator = (By.CSS_SELECTOR, 'span.group-count-list .btn')
@@ -210,6 +213,9 @@ class TreeherderPage(Base):
         @property
         def find_expanded_group_content(self):
             return self.is_element_displayed(*self._expanded_group_content_locator)
+
+        def displayed_job_title(self):
+            return self.find_element(*self._displayed_job_title_locator).get_attribute('title')
 
         @property
         def jobs(self):
@@ -257,15 +263,13 @@ class TreeherderPage(Base):
 
         class Job(Region):
 
-            _jobs_locator = (By.CLASS_NAME, '.job-btn')
-
             @property
             def symbol(self):
                 return self.root.text
 
             @property
             def title(self):
-                return self.find_element(*self._jobs_locator).get_attribute('title')
+                return self.root.get_attribute('title')
 
             def click(self):
                 self.root.click()
