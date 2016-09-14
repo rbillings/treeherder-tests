@@ -11,16 +11,16 @@ from pages.treeherder import TreeherderPage
 def test_filter_jobs(base_url, selenium):
     """Open resultset page and filter for platform"""
     page = TreeherderPage(selenium, base_url).open()
-    all_builds = list(page.all_builds)
+    all_builds = page.all_builds
 
     platform = u'Linux'
     page.filter_by(platform)
-    filtered_builds = list(page.all_builds)
+    filtered_builds = page.all_builds
 
     buildname = page.result_sets[0].builds[0].platform_name
     assert platform in buildname
 
-    assert not all_builds == filtered_builds
+    assert all_builds > filtered_builds
 
     page.clear_filter()
     platform2 = u'Windows'
