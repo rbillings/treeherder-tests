@@ -18,19 +18,19 @@ class TreeherderPage(Base):
     _active_watched_repo_locator = (By.CSS_SELECTOR, '#watched-repo-navbar button.active')
     _clear_filter_locator = (By.ID, 'quick-filter-clear-button')
     _close_the_job_panel_locator = (By.CSS_SELECTOR, '.info-panel-navbar-controls > li:nth-child(2)')
-    _filter_panel_locator = (By.CSS_SELECTOR, 'span.navbar-right > span:nth-child(4)')
     _filter_panel_all_failures_locator = (By.CSS_SELECTOR, '.pull-right input')
-    _filter_panel_testfailed_failures_locator = (By.ID, 'testfailed')
     _filter_panel_busted_failures_locator = (By.ID, 'busted')
     _filter_panel_exception_failures_locator = (By.ID, 'exception')
+    _filter_panel_locator = (By.CSS_SELECTOR, 'span.navbar-right > span:nth-child(4)')
     _filter_panel_reset_locator = (By.CSS_SELECTOR, '.pull-right span:nth-child(3)')
+    _filter_panel_testfailed_failures_locator = (By.ID, 'testfailed')
     _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
     _next_ten_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(1)')
     _next_twenty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(2)')
     _next_fifty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(3)')
-    _quick_filter_locator = (By.ID, 'quick-filter')
     _notification_locator = (By.CSS_SELECTOR, 'ul#notification-box')
     _resultset_visible_locator = (By.CSS_SELECTOR, 'span.hidden.ready')
+    _quick_filter_locator = (By.ID, 'quick-filter')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
     _unchecked_repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
@@ -48,6 +48,18 @@ class TreeherderPage(Base):
     @property
     def all_jobs(self):
         return list(itertools.chain.from_iterable([r.jobs for r in self.result_sets]))
+
+    @property
+    def checkbox_busted_is_selected(self):
+        return self.find_element(*self._filter_panel_busted_failures_locator).is_selected()
+
+    @property
+    def checkbox_exception_is_selected(self):
+        return self.find_element(*self._filter_panel_exception_failures_locator).is_selected()
+
+    @property
+    def checkbox_testfailed_is_selected(self):
+        return self.find_element(*self._filter_panel_testfailed_failures_locator).is_selected()
 
     @property
     def job_details(self):
@@ -77,23 +89,30 @@ class TreeherderPage(Base):
     def unclassified_failure_count(self):
         return int(self.find_element(*self._unclassified_failure_count_locator).text)
 
-    def get_next_ten_results(self):
-        self.find_element(*self._next_ten_locator).click()
-        self.wait.until(lambda s: len(self.result_sets) == 20)
-        return self
-
-    def get_next_twenty_results(self):
-        self.find_element(*self._next_twenty_locator).click()
-        self.wait.until(lambda s: len(self.result_sets) == 30)
-        return self
-
-    def get_next_fifty_results(self):
-        self.find_element(*self._next_fifty_locator).click()
-        self.wait.until(lambda s: len(self.result_sets) == 60)
-        return self
-
     def clear_filter(self):
         self.selenium.find_element(*self._clear_filter_locator).click()
+
+    def click_on_filters_panel(self):
+        self.find_element(*self._filter_panel_locator).click()
+
+    def close_the_job_panel(self):
+        self.find_element(*self._close_the_job_panel_locator).click()
+
+    def deselect_all_failures(self):
+        """Filters Panel must be opened"""
+        self.find_element(*self._filter_panel_all_failures_locator).click()
+
+    def deselect_busted_failures(self):
+        """Filters Panel must be opened"""
+        self.find_element(*self._filter_panel_busted_failures_locator).click()
+
+    def deselect_exception_failures(self):
+        """Filters Panel must be opened"""
+        self.find_element(*self._filter_panel_exception_failures_locator).click()
+
+    def deselect_testfailed_failures(self):
+        """Filters Panel must be opened"""
+        self.find_element(*self._filter_panel_testfailed_failures_locator).click()
 
     def filter_by(self, term):
         el = self.selenium.find_element(*self._quick_filter_locator)
@@ -103,6 +122,18 @@ class TreeherderPage(Base):
 
     def filter_unclassified_jobs(self):
         self.find_element(*self._unclassified_failure_filter_locator).click()
+
+    def get_next_ten_results(self):
+        self.find_element(*self._next_ten_locator).click()
+        self.wait.until(lambda s: len(self.result_sets) == 20)
+
+    def get_next_twenty_results(self):
+        self.find_element(*self._next_twenty_locator).click()
+        self.wait.until(lambda s: len(self.result_sets) == 30)
+
+    def get_next_fifty_results(self):
+        self.find_element(*self._next_fifty_locator).click()
+        self.wait.until(lambda s: len(self.result_sets) == 60)
 
     def open_next_unclassified_failure(self):
         el = self.find_element(*self._result_sets_locator)
@@ -125,11 +156,27 @@ class TreeherderPage(Base):
         el.send_keys(Keys.SPACE)
         self.wait.until(lambda _: self.pinboard.is_pinboard_open)
 
+    def reset_filters(self):
+        """Filters Panel must be opened"""
+        self.find_element(*self._filter_panel_reset_locator).click()
+
     def select_mozilla_central_repo(self):
         # Fix me: https://github.com/mozilla/treeherder-tests/issues/43
         self.open_repos_menu()
         self.find_element(*self._mozilla_central_repo_locator).click()
         self.wait_for_page_to_load()
+
+    def select_busted_failures(self):
+        """Filters Panel must be opened"""
+        self.find_element(*self._filter_panel_busted_failures_locator).click()
+
+    def select_exception_failures(self):
+        """Filters Panel must be opened"""
+        self.find_element(*self._filter_panel_exception_failures_locator).click()
+
+    def select_testfailed_failures(self):
+        """Filters Panel must be opened"""
+        self.find_element(*self._filter_panel_testfailed_failures_locator).click()
 
     def select_random_repo(self):
         self.open_repos_menu()
@@ -138,53 +185,6 @@ class TreeherderPage(Base):
         repo.click()
         self.wait.until(lambda s: self._active_watched_repo_locator == repo_name)
         return repo_name
-
-    def click_on_filters_panel(self):
-        self.find_element(*self._filter_panel_locator).click()
-
-    def close_the_job_panel(self):
-        self.find_element(*self._close_the_job_panel_locator).click()
-
-    def deselect_all_failures(self):
-        """Filters Panel must be opened"""
-        self.find_element(*self._filter_panel_all_failures_locator).click()
-
-    def reset_filters(self):
-        """Filters Panel must be opened"""
-        self.find_element(*self._filter_panel_reset_locator).click()
-
-    def select_testfailed_failures(self):
-        """Filters Panel must be opened"""
-        self.find_element(*self._filter_panel_testfailed_failures_locator).click()
-
-    def deselect_testfailed_failures(self):
-        """Filters Panel must be opened"""
-        self.find_element(*self._filter_panel_testfailed_failures_locator).click()
-
-    def select_busted_failures(self):
-        """Filters Panel must be opened"""
-        self.find_element(*self._filter_panel_busted_failures_locator).click()
-
-    def deselect_busted_failures(self):
-        """Filters Panel must be opened"""
-        self.find_element(*self._filter_panel_busted_failures_locator).click()
-
-    def select_exception_failures(self):
-        """Filters Panel must be opened"""
-        self.find_element(*self._filter_panel_exception_failures_locator).click()
-
-    def deselect_exception_failures(self):
-        """Filters Panel must be opened"""
-        self.find_element(*self._filter_panel_exception_failures_locator).click()
-
-    def checkbox_testfailed_is_selected(self):
-        return self.find_element(*self._filter_panel_testfailed_failures_locator).is_selected()
-
-    def checkbox_busted_is_selected(self):
-        return self.find_element(*self._filter_panel_busted_failures_locator).is_selected()
-
-    def checkbox_exception_is_selected(self):
-        return self.find_element(*self._filter_panel_exception_failures_locator).is_selected()
 
     class ResultSet(Region):
 
@@ -211,6 +211,10 @@ class TreeherderPage(Base):
             return self.find_element(*self._datestamp_locator).text
 
         @property
+        def find_expanded_group_content(self):
+            return self.is_element_displayed(*self._expanded_group_content_locator)
+
+        @property
         def jobs(self):
             return [self.Job(self.page, root=el) for el in self.find_elements(*self._jobs_locator)]
 
@@ -226,10 +230,6 @@ class TreeherderPage(Base):
             self.find_element(*self._dropdown_toggle_locator).click()
             self.find_element(*self._add_new_job_locator).click()
             self.wait.until(lambda s: self.is_element_displayed(*self._runnable_jobs_locator))
-
-        @property
-        def find_expanded_group_content(self):
-            return self.is_element_displayed(*self._expanded_group_content_locator)
 
         def expand_group_count(self):
             self.find_element(*self._group_content_locator).click()
@@ -255,6 +255,7 @@ class TreeherderPage(Base):
             return self.find_element(*self._datestamp_locator).click()
 
         class Build(Region):
+
             _platform_name_locator = (By.CSS_SELECTOR, 'td:nth-child(1) > span:nth-child(1)')
 
             @property
@@ -263,21 +264,21 @@ class TreeherderPage(Base):
 
         class Job(Region):
 
-            def click(self):
-                self.root.click()
-                self.wait.until(lambda _: self.page.job_details.job_result_status)
-
             @property
             def symbol(self):
                 return self.root.text
 
+            def click(self):
+                self.root.click()
+                self.wait.until(lambda _: self.page.job_details.job_result_status)
+
     class JobDetails(Region):
 
         _job_bug_locator = (By.CSS_SELECTOR, '#job-details-pane > ul > li > a > em')
+        _job_details_panel_locator = (By.ID, 'job-details-panel')
         _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span:nth-child(2)')
         _logviewer_button_locator = (By.ID, 'logviewer-btn')
         _pin_job_locator = (By.ID, 'pin-job-btn')
-        _job_details_panel_locator = (By.ID, 'job-details-panel')
 
         @property
         def is_job_bug_visible(self):
@@ -302,26 +303,26 @@ class TreeherderPage(Base):
     class Pinboard(Region):
 
         _root_locator = (By.ID, 'pinboard-panel')
-        _add_bug_locator = (By.CSS_SELECTOR, '#pinboard-related-bugs .pinboard-preload-txt')
         _add_bug_id_locator = (By.CSS_SELECTOR, '#related-bug-input')
+        _add_bug_locator = (By.CSS_SELECTOR, '#pinboard-related-bugs .pinboard-preload-txt')
         _clear_all_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .dropdown-menu li:nth-child(4)')
-        _open_save_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .save-btn-dropdown')
         _jobs_locator = (By.CLASS_NAME, 'pinned-job')
+        _open_save_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .save-btn-dropdown')
         _pinboard_remove_job_locator = (By.CSS_SELECTOR, '#pinned-job-list .pinned-job-close-btn')
         _save_bugs_only_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .dropdown-menu li:nth-child(2)')
         _save_pinboard_button_locator = (By.CSS_SELECTOR, '.save-btn')
 
         @property
-        def selected_job(self):
-            return next(j for j in self.jobs if j.is_selected)
+        def is_pinboard_open(self):
+            return self.root.is_displayed()
 
         @property
         def jobs(self):
             return [self.Job(self.page, el) for el in self.find_elements(*self._jobs_locator)]
 
         @property
-        def is_pinboard_open(self):
-            return self.root.is_displayed()
+        def selected_job(self):
+            return next(j for j in self.jobs if j.is_selected)
 
         def add_bug_to_pinned_job(self, bug_id):
             self.find_element(*self._add_bug_locator).click()

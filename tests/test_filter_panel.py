@@ -50,14 +50,14 @@ def test_filter_panel_reset_button(base_url, selenium):
 
     page.click_on_filters_panel()
     page.deselect_all_failures()
-    assert not page.checkbox_testfailed_is_selected()
-    assert not page.checkbox_busted_is_selected()
-    assert not page.checkbox_exception_is_selected()
+    assert not page.checkbox_testfailed_is_selected
+    assert not page.checkbox_busted_is_selected
+    assert not page.checkbox_exception_is_selected
 
     filtered_jobs = len(page.all_jobs)
     assert not all_jobs == filtered_jobs
 
     page.reset_filters()
-    assert page.checkbox_testfailed_is_selected()
-    assert page.checkbox_busted_is_selected()
-    assert page.checkbox_exception_is_selected()
+    assert page.checkbox_testfailed_is_selected
+    assert page.checkbox_busted_is_selected
+    assert page.checkbox_exception_is_selected
