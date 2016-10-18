@@ -30,6 +30,7 @@ def test_pin_job_from_job_details(base_url, selenium):
 def test_clear_pinboard(base_url, selenium):
     """Open treeherder page, pin a job and then clear the pinboard"""
     page = TreeherderPage(selenium, base_url).open()
+    assert page.results_visible
     page.result_sets[0].jobs[0].click()
     page.pin_using_spacebar()
     assert 1 == len(page.pinboard.jobs)
