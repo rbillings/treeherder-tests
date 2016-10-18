@@ -30,6 +30,7 @@ class TreeherderPage(Base):
     _next_fifty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(3)')
     _quick_filter_locator = (By.ID, 'quick-filter')
     _notification_locator = (By.CSS_SELECTOR, 'ul#notification-box')
+    _resultset_visible_locator = (By.CSS_SELECTOR, 'span.hidden.ready')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
     _unchecked_repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
@@ -63,6 +64,10 @@ class TreeherderPage(Base):
     @property
     def result_sets(self):
         return [self.ResultSet(self, el) for el in self.find_elements(*self._result_sets_locator)]
+
+    @property
+    def results_visible(self):
+        return self.find_element(*self._resultset_visible_locator)
 
     @property
     def unchecked_repos(self):
@@ -192,6 +197,7 @@ class TreeherderPage(Base):
         _jobs_locator = (By.CSS_SELECTOR, '.job-btn.filter-shown')
         _pin_all_jobs_locator = (By.CLASS_NAME, 'pin-all-jobs-btn')
         _platform_locator = (By.CLASS_NAME, 'platform')
+        _resultset_visible_locator = (By.CSS_SELECTOR, 'span.hidden.ready')
         _runnable_jobs_locator = (By.CSS_SELECTOR, '.runnable-job-btn.filter-shown')
         _set_bottom_of_range_locator = (By.CSS_SELECTOR, '.open ul > li:nth-child(8) > a')
         _set_top_of_range_locator = (By.CSS_SELECTOR, '.open ul > li:nth-child(7) > a')
@@ -207,6 +213,10 @@ class TreeherderPage(Base):
         @property
         def jobs(self):
             return [self.Job(self.page, root=el) for el in self.find_elements(*self._jobs_locator)]
+
+        @property
+        def results_visible(self):
+            return self.find_element(*self._resultset_visible_locator)
 
         @property
         def runnable_jobs(self):

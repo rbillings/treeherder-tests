@@ -30,6 +30,7 @@ def test_pin_job_from_job_details(base_url, selenium):
 def test_clear_pinboard(base_url, selenium):
     """Open treeherder page, pin a job and then clear the pinboard"""
     page = TreeherderPage(selenium, base_url).open()
+    assert page.results_visible
     page.result_sets[0].jobs[0].click()
     page.pin_using_spacebar()
     assert 1 == len(page.pinboard.jobs)
@@ -58,7 +59,8 @@ def test_pin_a_bug(base_url, selenium, new_user):
     bug_id = 1164485
     page.pinboard.add_bug_to_pinned_job(bug_id)
     page.pinboard.save_bug_to_pinboard()
+    assert page.results_visible
 
     message = page.notification_text
     # Removed assert that Job Details displays bug number as it often requires a page refresh to display
-    assert "Bug association" in message
+    assert 'Bug association' in message

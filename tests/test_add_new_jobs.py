@@ -8,8 +8,11 @@ from pages.treeherder import TreeherderPage
 
 
 @pytest.mark.nondestructive
-def test_add_new_jobs(base_url, selenium):
+def test_add_new_jobs(base_url, selenium, new_user):
     page = TreeherderPage(selenium, base_url).open()
+    page.header.login(new_user['email'], new_user['password'])
+    assert page.header.is_user_logged_in
+    assert page.results_visible    
     assert len(page.result_sets) >= 1
     page.result_sets[0].view()
     page.result_sets[0].add_new_jobs()
@@ -17,8 +20,11 @@ def test_add_new_jobs(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_hide_runnable_jobs(base_url, selenium):
+def test_hide_runnable_jobs(base_url, selenium, new_user):
     page = TreeherderPage(selenium, base_url).open()
+    page.header.login(new_user['email'], new_user['password'])
+    assert page.header.is_user_logged_in
+    assert page.results_visible
     assert len(page.result_sets) >= 1
     page.result_sets[0].view()
     page.result_sets[0].add_new_jobs()

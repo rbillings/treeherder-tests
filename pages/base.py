@@ -17,7 +17,7 @@ class Base(Page):
     class Header(Region):
 
         _root_locator = (By.ID, 'th-global-navbar')
-        _login_locator = (By.CSS_SELECTOR, 'a.btn > span:nth-child(1)')
+        _login_locator = (By.CSS_SELECTOR, '.nav-login-btn > span:nth-child(1)')
         _logout_icon_locator = (By.ID, 'logoutLabel')
         _dropdown_menu_switch_page_locator = (By.CSS_SELECTOR, '.open ul > li a')
         _dropdown_menu_locator = (By.ID, 'th-logo')
