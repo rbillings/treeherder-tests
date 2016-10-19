@@ -21,4 +21,4 @@ def test_treeherder_dropdown(base_url, selenium):
 
     # Return to Treeherder page
     treeherder_page = perfherder_page.open_treeherder_page()
-    assert treeherder_page.results_visible 
+    assert treeherder_page.results_visible
