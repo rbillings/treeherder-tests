@@ -28,6 +28,7 @@ class TreeherderPage(Base):
     _next_ten_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(1)')
     _next_twenty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(2)')
     _next_fifty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(3)')
+    _resultset_visible_locator = (By.CSS_SELECTOR, 'span.hidden.ready')
     _quick_filter_locator = (By.ID, 'quick-filter')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
@@ -36,8 +37,8 @@ class TreeherderPage(Base):
     _unclassified_failure_filter_locator = (By.CSS_SELECTOR, '.btn-unclassified-failures')
 
     def wait_for_page_to_load(self):
-        self.wait.until(lambda s: self.unclassified_failure_count > 0)
-        return self
+        el = self.find_element(*self._resultset_visible_locator)
+        self.wait.until(EC.visibility_of(el))
 
     @property
     def active_watched_repo(self):
