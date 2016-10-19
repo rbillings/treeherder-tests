@@ -28,6 +28,7 @@ class TreeherderPage(Base):
     _next_ten_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(1)')
     _next_twenty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(2)')
     _next_fifty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(3)')
+    _notification_locator = (By.CSS_SELECTOR, 'ul#notification-box')
     _quick_filter_locator = (By.ID, 'quick-filter')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
@@ -80,10 +81,6 @@ class TreeherderPage(Base):
     @property
     def result_sets(self):
         return [self.ResultSet(self, el) for el in self.find_elements(*self._result_sets_locator)]
-
-    @property
-    def results_visible(self):
-        return self.find_element(*self._resultset_visible_locator)
 
     @property
     def unchecked_repos(self):
