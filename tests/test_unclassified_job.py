@@ -30,11 +30,11 @@ def test_open_unclassified_failure_log(base_url, selenium):
 @pytest.mark.nondestructive
 def test_view_unclassified_jobs(base_url, selenium):
     page = TreeherderPage(selenium, base_url).open()
-    all_jobs = list(page.all_jobs)
+    all_jobs = page.all_jobs
 
     page.filter_unclassified_jobs()
-    filtered_jobs = list(page.all_jobs)
-    jobstatus = page.result_sets[0].jobs[0].title
+    filtered_jobs = page.all_jobs
+    jobstatus = page.select_random_job()
 
     assert not all_jobs == filtered_jobs
     if 'testfailed' in jobstatus:

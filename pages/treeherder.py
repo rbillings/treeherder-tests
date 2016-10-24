@@ -132,8 +132,6 @@ class TreeherderPage(Base):
 
     def filter_unclassified_jobs(self):
         self.find_element(*self._unclassified_failure_filter_locator).click()
-        self.wait.until(lambda s: len(self.result_sets) == 10)
-        return self
 
     def open_next_unclassified_failure(self):
         el = self.find_element(*self._result_sets_locator)
@@ -178,6 +176,11 @@ class TreeherderPage(Base):
         """Filters Panel must be opened"""
         self.find_element(*self._filter_panel_testfailed_failures_locator).click()
 
+    def select_random_job(self):
+        job = random.choice(self.all_jobs)
+        job_status = job.title
+        return job_status
+
     def select_random_repo(self):
         self.open_repos_menu()
         repo = random.choice(self.unchecked_repos)
@@ -190,7 +193,6 @@ class TreeherderPage(Base):
 
         _add_new_job_locator = (By.CSS_SELECTOR, '.open ul > li a')
         _datestamp_locator = (By.CSS_SELECTOR, '.result-set-title-left > span a')
-        _displayed_job_title_locator = (By.CSS_SELECTOR, '.job-btn.filter-shown')
         _dropdown_toggle_locator = (By.CLASS_NAME, 'dropdown-toggle')
         _expanded_group_content_locator = (By.CSS_SELECTOR, '.group-job-list[style="display: inline;"]')
         _group_content_locator = (By.CSS_SELECTOR, 'span.group-count-list .btn')
@@ -213,9 +215,6 @@ class TreeherderPage(Base):
         @property
         def find_expanded_group_content(self):
             return self.is_element_displayed(*self._expanded_group_content_locator)
-
-        def displayed_job_title(self):
-            return self.find_element(*self._displayed_job_title_locator).get_attribute('title')
 
         @property
         def jobs(self):
