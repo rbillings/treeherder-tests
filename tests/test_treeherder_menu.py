@@ -13,7 +13,7 @@ def test_treeherder_dropdown(base_url, selenium):
     treeherder_page = TreeherderPage(selenium, base_url).open()
 
     # Verify Treeherder loads
-    assert treeherder_page.results_visible
+    assert treeherder_page.unclassified_failure_count > 0
 
     # Switch to Perfherder page
     perfherder_page = treeherder_page.open_perfherder_page()
@@ -21,4 +21,4 @@ def test_treeherder_dropdown(base_url, selenium):
 
     # Return to Treeherder page
     treeherder_page = perfherder_page.open_treeherder_page()
-    assert treeherder_page.results_visible
+    assert treeherder_page.unclassified_failure_count > 0
