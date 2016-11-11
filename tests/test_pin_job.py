@@ -43,24 +43,3 @@ def test_pin_all_jobs(base_url, selenium):
     page = TreeherderPage(selenium, base_url).open()
     page.result_sets[0].pin_all_jobs()
     assert 0 < len(page.pinboard.jobs) <= 500
-
-
-def test_pin_a_bug(base_url, selenium, new_user):
-    """Open treeherder, log in, select unclassified job, pin job, add a bug, save and verify"""
-    page = TreeherderPage(selenium, base_url).open()
-    page.header.login(new_user['email'], new_user['password'])
-    assert page.header.is_user_logged_in
-
-    page.open_next_unclassified_failure()
-    assert not page.job_details.is_job_bug_visible
-    page.pin_using_spacebar()
-
-    bug_id = 1164485
-    page.pinboard.add_bug_to_pinned_job(bug_id)
-    page.pinboard.save_bug_to_pinboard()
-    assert page.results_visible
-
-    message = page.notification_text
-    # Removed assert that Job Details displays bug number as it often requires a page refresh to display
-    assert 'Bug association' in message
->>>>>>> Added page result visible, fixed log in method
