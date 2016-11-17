@@ -28,7 +28,6 @@ class TreeherderPage(Base):
     _next_ten_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(1)')
     _next_twenty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(2)')
     _next_fifty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(3)')
-    _resultset_visible_locator = (By.CSS_SELECTOR, 'span.hidden.ready')
     _quick_filter_locator = (By.ID, 'quick-filter')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
