@@ -31,7 +31,7 @@ class TreeherderPage(Base):
     _quick_filter_locator = (By.ID, 'quick-filter')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
-    _resultset_visible_locator = (By.CSS_SELECTOR, 'span.hidden' )
+    _resultset_visible_locator = (By.CSS_SELECTOR, 'span.hidden')
     _unchecked_repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
     _unclassified_failure_filter_locator = (By.CSS_SELECTOR, '.btn-unclassified-failures')
