@@ -1,0 +1,4 @@
+PyPOM==1.1.1
+pytest~=3.0.0
+pytest-selenium
+pytest-xdist==1.15.0
