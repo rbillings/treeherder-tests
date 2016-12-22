@@ -4,7 +4,8 @@ This repository contains tests for [Mozilla's Treeherder](https://treeherder.moz
 [![license](https://img.shields.io/badge/license-MPL%202.0-blue.svg)](https://github.com/mozilla/treeherder-tests/blob/master/LICENSE)
 [![travis](https://img.shields.io/travis/mozilla/treeherder-tests.svg?label=travis)](http://travis-ci.org/mozilla/treeherder-tests/)
 [![stage](https://img.shields.io/jenkins/s/https/webqa-ci.mozilla.com/treeherder.stage.svg?label=stage)](https://webqa-ci.mozilla.com/job/treeherder.stage/)
-[![requirements](https://img.shields.io/requires/github/mozilla/treeherder-tests.svg)](https://requires.io/github/mozilla/treeherder-tests/requirements/?branch=master)
+[![updates](https://pyup.io/repos/github/mozilla/treeherder-tests/shield.svg)](https://pyup.io/repos/github/mozilla/treeherder-tests/)
+[![python 3](https://pyup.io/repos/github/mozilla/treeherder-tests/python-3-shield.svg)](https://pyup.io/repos/github/mozilla/treeherder-tests/)
 
 ## Getting involved
 We love working with contributors to fill out the test coverage for Treeherder,
