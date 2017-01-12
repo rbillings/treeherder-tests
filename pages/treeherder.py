@@ -130,9 +130,6 @@ class TreeherderPage(Base):
         self.find_element(*self._next_fifty_locator).click()
         self.wait.until(lambda s: len(self.result_sets) == 60)
 
-    def filter_unclassified_jobs(self):
-        self.find_element(*self._unclassified_failure_filter_locator).click()
-
     def open_next_unclassified_failure(self):
         el = self.find_element(*self._result_sets_locator)
         self.wait.until(EC.visibility_of(el))
