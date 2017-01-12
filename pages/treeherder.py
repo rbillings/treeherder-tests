@@ -176,11 +176,6 @@ class TreeherderPage(Base):
         """Filters Panel must be opened"""
         self.find_element(*self._filter_panel_testfailed_failures_locator).click()
 
-    def select_random_job(self):
-        job = random.choice(self.all_jobs)
-        job_status = job.title
-        return job_status
-
     def select_random_repo(self):
         self.open_repos_menu()
         repo = random.choice(self.unchecked_repos)

@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import pytest
+import random
 
 from pages.treeherder import TreeherderPage
 
@@ -34,14 +35,8 @@ def test_view_unclassified_jobs(base_url, selenium):
 
     page.filter_unclassified_jobs()
     filtered_jobs = page.all_jobs
-    jobstatus = page.select_random_job()
 
+    job = random.choice(filtered_jobs)
+    unclassified = ['testfailed', 'busted', 'exception']
+    assert any([status for status in unclassified if status in job.title])
     assert not all_jobs == filtered_jobs
-    if 'testfailed' in jobstatus:
-        assert 'testfailed' in jobstatus
-
-    if 'busted' in jobstatus:
-        assert 'busted' in jobstatus
-
-    if 'exception' in jobstatus:
-        assert 'exception' in jobstatus
