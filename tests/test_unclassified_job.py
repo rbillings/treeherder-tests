@@ -10,7 +10,7 @@ from pages.treeherder import TreeherderPage
 @pytest.mark.nondestructive
 def test_unclassified_failure(base_url, selenium):
     """Open resultset page and search for next unclassified failure"""
-    page = TreeherderPage(selenium, base_url).open() 
+    page = TreeherderPage(selenium, base_url).open()
     assert page.unclassified_failure_count > 0
 
     page.open_next_unclassified_failure()
