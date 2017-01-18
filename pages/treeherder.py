@@ -28,11 +28,9 @@ class TreeherderPage(Base):
     _next_ten_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(1)')
     _next_twenty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(2)')
     _next_fifty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(3)')
-    _notification_locator = (By.CSS_SELECTOR, 'ul#notification-box')
     _quick_filter_locator = (By.ID, 'quick-filter')
     _repos_menu_locator = (By.ID, 'repoLabel')
     _result_sets_locator = (By.CSS_SELECTOR, '.result-set:not(.row)')
-    _resultset_visible_locator = (By.CSS_SELECTOR, 'span.hidden.ready')
     _unchecked_repos_links_locator = (By.CSS_SELECTOR, '#repoLabel + .dropdown-menu .dropdown-checkbox:not([checked]) + .dropdown-link')
     _unclassified_failure_count_locator = (By.ID, 'unclassified-failure-count')
     _unclassified_failure_filter_locator = (By.CSS_SELECTOR, '.btn-unclassified-failures')
@@ -244,11 +242,6 @@ class TreeherderPage(Base):
         @property
         def runnable_jobs(self):
             return [self.Job(self.page, root=el) for el in self.find_elements(*self._runnable_jobs_locator)]
-
-        def add_new_jobs(self):
-            self.find_element(*self._dropdown_toggle_locator).click()
-            self.find_element(*self._add_new_job_locator).click()
-            self.wait.until(lambda s: self.is_element_displayed(*self._runnable_jobs_locator))
 
         def expand_group_count(self):
             self.find_element(*self._group_content_locator).click()
