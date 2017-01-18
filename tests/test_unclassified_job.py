@@ -35,8 +35,8 @@ def test_view_unclassified_jobs(base_url, selenium):
 
     page.filter_unclassified_jobs()
     filtered_jobs = page.all_jobs
+    assert not all_jobs == filtered_jobs
 
     job = random.choice(filtered_jobs)
     unclassified = ['testfailed', 'busted', 'exception']
-    assert any([status for status in unclassified if status in job.title])
-    assert not all_jobs == filtered_jobs
+    assert any(status in job.title for status in unclassified)
