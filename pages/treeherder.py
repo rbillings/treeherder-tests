@@ -284,6 +284,10 @@ class TreeherderPage(Base):
             def symbol(self):
                 return self.root.text
 
+            @property
+            def title(self):
+                return self.root.get_attribute('title')
+
             def click(self):
                 self.root.click()
                 self.wait.until(lambda _: self.page.job_details.job_result_status)
