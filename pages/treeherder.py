@@ -183,6 +183,7 @@ class TreeherderPage(Base):
     def select_random_email(self):
         random_email = random.choice(self.all_emails)
         random_email.click()
+        self.wait_for_page_to_load()
 
     def select_random_job(self):
         random_job = random.choice(self.all_jobs)
