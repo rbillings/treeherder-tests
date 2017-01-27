@@ -407,9 +407,9 @@ class TreeherderPage(Base):
             return LogviewerPage(self.selenium, self.page.base_url).wait_for_page_to_load()
 
         def pin_job(self):
-            el = self.find_element(*self._pin_job_locator)
+            el = self.find_element(*self._job_keyword_locator)
             self.wait.until(EC.visibility_of(el))
-            el.click()
+            self.find_element(*self._pin_job_locator).click()
 
     class Pinboard(Region):
 
