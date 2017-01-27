@@ -35,6 +35,6 @@ def test_status_results(base_url, selenium):
     all_jobs = page.all_jobs
     filtered_jobs = len(page.all_jobs)
     job = random.choice(all_jobs)
-    all = ['testfailed', 'exception', 'busted', 'success','retry','coalesced','running']
+    all = ['testfailed', 'exception', 'busted', 'success', 'retry', 'coalesced', 'running']
     assert any(status in job.title for status in all)
     assert filtered_jobs > unfiltered_jobs
