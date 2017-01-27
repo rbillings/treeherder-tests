@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import time
+
 from pages.treeherder import TreeherderPage
 
 
@@ -34,6 +36,7 @@ def test_clear_pinboard(base_url, selenium):
     page.pin_using_spacebar()
     assert 1 == len(page.pinboard.jobs)
     page.pinboard.clear_pinboard()
+    time.sleep(5)
     assert page.pinboard.is_pinboard_open
     assert 0 == len(page.pinboard.jobs)
 
