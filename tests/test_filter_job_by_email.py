@@ -30,4 +30,4 @@ def test_remove_email_address_filter(base_url, selenium):
     page.click_on_active_watched_repo()
     all_emails = [email.get_name for email in page.all_emails]
 
-    assert len(all_emails) > 1
+    assert len(set(all_emails)) > 1

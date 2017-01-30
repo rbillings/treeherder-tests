@@ -96,6 +96,7 @@ class TreeherderPage(Base):
 
     def click_on_active_watched_repo(self):
         self.find_element(*self._active_watched_repo_locator).click()
+        self.wait_for_page_to_load()
 
     def close_the_job_panel(self):
         self.find_element(*self._close_the_job_panel_locator).click()
