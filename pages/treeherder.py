@@ -37,9 +37,7 @@ class TreeherderPage(Base):
     _unclassified_failure_filter_locator = (By.CSS_SELECTOR, '.btn-unclassified-failures')
 
     def wait_for_page_to_load(self):
-        el = self.find_element(*self._resultset_visible_locator)
-        self.wait.until(lambda s: 'hidden' in el.get_attribute('class'))
-        return self
+        self.wait.until(lambda s: len(self.result_sets) >= 1)
 
     @property
     def active_watched_repo(self):
