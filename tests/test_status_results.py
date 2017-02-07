@@ -9,32 +9,89 @@ from pages.treeherder import TreeherderPage
 
 
 @pytest.mark.nondestructive
-def test_status_results(base_url, selenium):
-    """Open resultset page and verify job status buttons in the nav"""
+def test_default_status(base_url, selenium):
+    """Open resultset page and verify default job status buttons in the nav."""
     page = TreeherderPage(selenium, base_url).open()
-    page.filter_job_failures()
+    assert page.nav_filter_failures_is_selected
+    assert page.nav_filter_success_is_selected
+    assert page.nav_filter_retry_is_selected
+    assert page.nav_filter_usercancel_is_selected
+    assert not page.nav_filter_coalesced_is_selected
+    assert page.nav_filter_in_progress_is_selected
+
+
+@pytest.mark.nondestructive
+def test_status_results_failures(base_url, selenium):
+    """Open resultset page and verify job failure filter displays correctly."""
+    page = TreeherderPage(selenium, base_url).open()
     page.filter_job_successes()
     page.filter_job_retries()
     page.filter_job_usercancel()
     page.filter_job_in_progress()
 
-    all_jobs = page.all_jobs
-    unfiltered_jobs = len(page.all_jobs)
-
-    page.filter_job_failures()
     all_jobs = page.all_jobs
     job = random.choice(all_jobs)
     unclassified = ['testfailed', 'exception', 'busted']
     assert any(status in job.title for status in unclassified)
 
-    page.filter_job_successes()
+
+@pytest.mark.nondestructive
+def test_status_results_success(base_url, selenium):
+    """Open resultset page and verify job status success filter displays correctly."""
+    page = TreeherderPage(selenium, base_url).open()
+    page.filter_job_failures()
     page.filter_job_retries()
     page.filter_job_usercancel()
     page.filter_job_in_progress()
 
     all_jobs = page.all_jobs
-    filtered_jobs = len(page.all_jobs)
     job = random.choice(all_jobs)
-    all = ['testfailed', 'exception', 'busted', 'success', 'retry', 'coalesced', 'running']
-    assert any(status in job.title for status in all)
-    assert filtered_jobs > unfiltered_jobs
+    jobstatus = 'success'
+    assert jobstatus in job.title
+
+
+@pytest.mark.nondestructive
+def test_status_results_retry(base_url, selenium):
+    """Open resultset page and verify job status retry filter displays correctly."""
+    page = TreeherderPage(selenium, base_url).open()
+    page.filter_job_failures()
+    page.filter_job_successes()
+    page.filter_job_usercancel()
+    page.filter_job_in_progress()
+
+    all_jobs = page.all_jobs
+    job = random.choice(all_jobs)
+    jobstatus = 'retry'
+    assert jobstatus in job.title
+
+
+@pytest.mark.nondestructive
+def test_status_results_coalesced(base_url, selenium):
+    """Open resultset page and verify job status coalesced filter displays correctly."""
+    page = TreeherderPage(selenium, base_url).open()
+    page.filter_job_failures()
+    page.filter_job_successes()
+    page.filter_job_retries()
+    page.filter_job_usercancel()
+    page.filter_job_coalesced()
+    page.filter_job_in_progress()
+
+    all_jobs = page.all_jobs
+    job = random.choice(all_jobs)
+    jobstatus = 'coalesced'
+    assert jobstatus in job.title
+
+
+@pytest.mark.nondestructive
+def test_status_results_in_progress(base_url, selenium):
+    """Open resultset page and verify job status in progress filter displays correctly."""
+    page = TreeherderPage(selenium, base_url).open()
+    page.filter_job_failures()
+    page.filter_job_successes()
+    page.filter_job_retries()
+    page.filter_job_usercancel()
+
+    all_jobs = page.all_jobs
+    job = random.choice(all_jobs)
+    jobstatus = 'running'
+    assert jobstatus in job.title
