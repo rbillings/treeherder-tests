@@ -44,10 +44,7 @@ def test_status_results_success(base_url, selenium):
     page.filter_job_usercancel()
     page.filter_job_in_progress()
 
-    all_jobs = page.all_jobs
-    job = random.choice(all_jobs)
-    jobstatus = 'success'
-    assert jobstatus in job.title
+    assert all(map(lambda job: 'success' in job.title, page.all_jobs))
 
 
 @pytest.mark.nondestructive
@@ -59,10 +56,7 @@ def test_status_results_retry(base_url, selenium):
     page.filter_job_usercancel()
     page.filter_job_in_progress()
 
-    all_jobs = page.all_jobs
-    job = random.choice(all_jobs)
-    jobstatus = 'retry'
-    assert jobstatus in job.title
+    assert all(map(lambda job: 'retry' in job.title, page.all_jobs))
 
 
 @pytest.mark.nondestructive
@@ -76,10 +70,7 @@ def test_status_results_coalesced(base_url, selenium):
     page.filter_job_coalesced()
     page.filter_job_in_progress()
 
-    all_jobs = page.all_jobs
-    job = random.choice(all_jobs)
-    jobstatus = 'coalesced'
-    assert jobstatus in job.title
+    assert all(map(lambda job: 'coalesced' in job.title, page.all_jobs))
 
 
 @pytest.mark.nondestructive
@@ -93,5 +84,5 @@ def test_status_results_in_progress(base_url, selenium):
 
     all_jobs = page.all_jobs
     job = random.choice(all_jobs)
-    jobstatus = 'running'
-    assert jobstatus in job.title
+    runnable = ['running', 'pending']
+    assert any(status in job.title for status in runnable)
