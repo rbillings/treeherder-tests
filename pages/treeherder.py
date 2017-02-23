@@ -25,6 +25,12 @@ class TreeherderPage(Base):
     _filter_panel_reset_locator = (By.CSS_SELECTOR, '.pull-right span:nth-child(3)')
     _filter_panel_testfailed_failures_locator = (By.ID, 'testfailed')
     _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
+    _nav_filter_coalesced_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=coalesced]')
+    _nav_filter_failures_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=failures]')
+    _nav_filter_inprogress_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title*=progress]')
+    _nav_filter_retry_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=retry]')
+    _nav_filter_successes_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=success]')
+    _nav_filter_usercancel_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=usercancel]')
     _next_ten_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(1)')
     _next_twenty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(2)')
     _next_fifty_locator = (By.CSS_SELECTOR, 'div.btn:nth-child(3)')
@@ -66,6 +72,36 @@ class TreeherderPage(Base):
     @property
     def job_details(self):
         return self.JobDetails(self)
+
+    @property
+    def nav_filter_coalesced_is_selected(self):
+        el = self.find_element(*self._nav_filter_coalesced_locator)
+        return ('fa-dot-circle-o' in el.get_attribute('class'))
+
+    @property
+    def nav_filter_failures_is_selected(self):
+        el = self.find_element(*self._nav_filter_failures_locator)
+        return ('fa-dot-circle-o' in el.get_attribute('class'))
+
+    @property
+    def nav_filter_in_progress_is_selected(self):
+        el = self.find_element(*self._nav_filter_inprogress_locator)
+        return ('fa-dot-circle-o' in el.get_attribute('class'))
+
+    @property
+    def nav_filter_retry_is_selected(self):
+        el = self.find_element(*self._nav_filter_retry_locator)
+        return ('fa-dot-circle-o' in el.get_attribute('class'))
+
+    @property
+    def nav_filter_success_is_selected(self):
+        el = self.find_element(*self._nav_filter_successes_locator)
+        return ('fa-dot-circle-o' in el.get_attribute('class'))
+
+    @property
+    def nav_filter_usercancel_is_selected(self):
+        el = self.find_element(*self._nav_filter_usercancel_locator)
+        return ('fa-dot-circle-o' in el.get_attribute('class'))
 
     @property
     def pinboard(self):
@@ -122,6 +158,24 @@ class TreeherderPage(Base):
         el.send_keys(term)
         el.send_keys(Keys.RETURN)
         self.wait.until(lambda s: self.result_sets)
+
+    def filter_job_coalesced(self):
+        self.find_element(*self._nav_filter_coalesced_locator).click()
+
+    def filter_job_failures(self):
+        self.find_element(*self._nav_filter_failures_locator).click()
+
+    def filter_job_in_progress(self):
+        self.find_element(*self._nav_filter_inprogress_locator).click()
+
+    def filter_job_retries(self):
+        self.find_element(*self._nav_filter_retry_locator).click()
+
+    def filter_job_successes(self):
+        self.find_element(*self._nav_filter_successes_locator).click()
+
+    def filter_job_usercancel(self):
+        self.find_element(*self._nav_filter_usercancel_locator).click()
 
     def filter_unclassified_jobs(self):
         self.find_element(*self._unclassified_failure_filter_locator).click()
