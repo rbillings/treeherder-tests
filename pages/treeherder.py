@@ -19,11 +19,13 @@ class TreeherderPage(Base):
     _clear_filter_locator = (By.ID, 'quick-filter-clear-button')
     _close_the_job_panel_locator = (By.CSS_SELECTOR, '.info-panel-navbar-controls > li:nth-child(2)')
     _filter_panel_all_failures_locator = (By.CSS_SELECTOR, '.pull-right input')
+    _filter_panel_body_locator = (By.CSS_SELECTOR, '.th-top-nav-options-panel')
     _filter_panel_busted_failures_locator = (By.ID, 'busted')
     _filter_panel_exception_failures_locator = (By.ID, 'exception')
     _filter_panel_locator = (By.CSS_SELECTOR, 'span.navbar-right > span:nth-child(4)')
     _filter_panel_reset_locator = (By.CSS_SELECTOR, '.pull-right span:nth-child(3)')
     _filter_panel_testfailed_failures_locator = (By.ID, 'testfailed')
+    _info_panel_content_locator = (By.ID, 'info-panel-content')
     _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
     _nav_filter_coalesced_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=coalesced]')
     _nav_filter_failures_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=failures]')
@@ -70,8 +72,18 @@ class TreeherderPage(Base):
         return self.find_element(*self._filter_panel_testfailed_failures_locator).is_selected()
 
     @property
+    def filter_panel_is_open(self):
+        el = self.find_element(*self._filter_panel_body_locator)
+        return el.is_displayed()
+
+    @property
     def job_details(self):
         return self.JobDetails(self)
+
+    @property
+    def info_panel_is_open(self):
+        el = self.find_element(*self._info_panel_content_locator)
+        return el.is_displayed()
 
     @property
     def nav_filter_coalesced_is_selected(self):
@@ -117,6 +129,11 @@ class TreeherderPage(Base):
         return [self.ResultSet(self, el) for el in self.find_elements(*self._result_sets_locator)]
 
     @property
+    def search_term(self):
+        el = self.find_element(*self._quick_filter_locator)
+        return el.get_attribute('value')
+
+    @property
     def unchecked_repos(self):
         return self.find_elements(*self._unchecked_repos_links_locator)
 
@@ -124,8 +141,14 @@ class TreeherderPage(Base):
     def unclassified_failure_count(self):
         return int(self.find_element(*self._unclassified_failure_count_locator).text)
 
-    def clear_filter(self):
-        self.selenium.find_element(*self._clear_filter_locator).click()
+    def clear_filter(self, method='pointer'):
+        if method == 'pointer':
+            self.selenium.find_element(*self._clear_filter_locator).click()
+        elif method == 'keyboard':
+            self.find_element(By.CSS_SELECTOR, 'body').send_keys(
+                Keys.CONTROL + Keys.SHIFT + 'f')
+        else:
+            raise Exception('Unsupported method: {}'.format(method))
 
     def click_on_filters_panel(self):
         self.find_element(*self._filter_panel_locator).click()
@@ -136,6 +159,9 @@ class TreeherderPage(Base):
 
     def close_the_job_panel(self):
         self.find_element(*self._close_the_job_panel_locator).click()
+
+    def close_all_panels(self):
+        self.find_element(By.CSS_SELECTOR, 'body').send_keys(Keys.ESCAPE)
 
     def deselect_all_failures(self):
         """Filters Panel must be opened"""
@@ -153,11 +179,17 @@ class TreeherderPage(Base):
         """Filters Panel must be opened"""
         self.find_element(*self._filter_panel_testfailed_failures_locator).click()
 
-    def filter_by(self, term):
-        el = self.selenium.find_element(*self._quick_filter_locator)
-        el.send_keys(term)
-        el.send_keys(Keys.RETURN)
-        self.wait.until(lambda s: self.result_sets)
+    def filter_by(self, term, method='pointer'):
+        if method == 'pointer':
+            el = self.selenium.find_element(*self._quick_filter_locator)
+            el.send_keys(term)
+            el.send_keys(Keys.RETURN)
+            self.wait.until(lambda s: self.result_sets)
+        elif method == 'keyboard':
+            self.find_element(By.CSS_SELECTOR, 'body').send_keys(
+                'f' + term + Keys.RETURN)
+        else:
+            raise Exception('Unsupported method: {}'.format(method))
 
     def filter_job_coalesced(self):
         self.find_element(*self._nav_filter_coalesced_locator).click()
