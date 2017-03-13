@@ -25,7 +25,6 @@ class TreeherderPage(Base):
     _filter_panel_locator = (By.CSS_SELECTOR, 'span.navbar-right > span:nth-child(4)')
     _filter_panel_reset_locator = (By.CSS_SELECTOR, '.pull-right span:nth-child(3)')
     _filter_panel_testfailed_failures_locator = (By.ID, 'testfailed')
-    _info_panel_content_locator = (By.ID, 'info-panel-content')
     _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
     _nav_filter_coalesced_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=coalesced]')
     _nav_filter_failures_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=failures]')
@@ -77,13 +76,12 @@ class TreeherderPage(Base):
         return el.is_displayed()
 
     @property
-    def job_details(self):
-        return self.JobDetails(self)
+    def info_panel(self):
+        return self.InfoPanel(self)
 
     @property
-    def info_panel_is_open(self):
-        el = self.find_element(*self._info_panel_content_locator)
-        return el.is_displayed()
+    def job_details(self):
+        return self.JobDetails(self)
 
     @property
     def nav_filter_coalesced_is_selected(self):
@@ -379,6 +377,15 @@ class TreeherderPage(Base):
             def click(self):
                 self.root.click()
                 self.wait.until(lambda _: self.page.job_details.job_result_status)
+
+    class InfoPanel(Region):
+
+        _info_panel_content_locator = (By.ID, 'info-panel-content')
+
+        @property
+        def info_panel_is_open(self):
+            el = self.find_element(*self._info_panel_content_locator)
+            return el.is_displayed()
 
     class JobDetails(Region):
 

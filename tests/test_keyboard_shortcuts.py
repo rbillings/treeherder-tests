@@ -18,19 +18,19 @@ def test_close_open_panels(base_url, selenium):
     page.select_random_job()
 
     assert page.filter_panel_is_open
-    assert page.info_panel_is_open
+    assert page.info_panel.info_panel_is_open
 
     page.close_all_panels()
 
     assert not page.filter_panel_is_open
-    assert not page.info_panel_is_open
+    assert not page.info_panel.info_panel_is_open
 
 
 def test_enter_quick_filter_shortcut(base_url, selenium):
     """Open Treeherder, verify shortcut: 'f' moves cursor to filter search box.
     Open Treeherder page, verify if search box is empty, enter search box
     filter using 'f' shortcut, type 'debug', verify if filter box contains
-    word Mozilla.
+    word 'debug'.
     """
     page = TreeherderPage(selenium, base_url).open()
     assert page.search_term == ''
@@ -41,14 +41,13 @@ def test_enter_quick_filter_shortcut(base_url, selenium):
 
 def test_clear_the_quick_filter_shortcut(base_url, selenium):
     """Open Treeherder, verify shortcut: CTRL + SHIFT + 'f' clears the filter search box.
-    Open Treeherder page, filter by 'Mozdebugilla', verify if filter box contains the
+    Open Treeherder page, filter by 'debug', verify if filter box contains the
     word 'debug', clear the quick filter using CTRL + SHIFT + f shortcut,
     verify if search box is empty.
     """
     page = TreeherderPage(selenium, base_url).open()
 
-    page.filter_by('debug', method='keyboard')
-    assert page.search_term == 'debug'
+    page.filter_by('debug')
 
     page.clear_filter(method='keyboard')
     assert page.search_term == ''
