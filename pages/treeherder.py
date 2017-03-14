@@ -407,14 +407,14 @@ class TreeherderPage(Base):
             return LogviewerPage(self.selenium, self.page.base_url).wait_for_page_to_load()
 
         def pin_job(self):
-            el = self.find_element(*self._pin_job_locator)
+            el = self.find_element(*self._job_keyword_locator)
             self.wait.until(EC.visibility_of(el))
-            el.click()
+            self.find_element(*self._pin_job_locator).click()
 
     class Pinboard(Region):
 
         _root_locator = (By.ID, 'pinboard-panel')
-        _clear_all_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .dropdown-menu li:nth-child(4)')
+        _clear_all_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .dropdown-menu li:nth-child(5) a')
         _jobs_locator = (By.CLASS_NAME, 'pinned-job')
         _open_save_menu_locator = (By.CSS_SELECTOR, '#pinboard-controls .save-btn-dropdown')
         _pinboard_remove_job_locator = (By.CSS_SELECTOR, '#pinned-job-list .pinned-job-close-btn')
