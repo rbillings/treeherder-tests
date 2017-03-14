@@ -20,7 +20,7 @@ def test_filter_by_test_status(base_url, selenium):
     page.deselect_exception_failures()
     if len(page.all_jobs) > 0:
         page.open_next_unclassified_failure()
-        assert 'testfailed' == page.job_details.job_result_status
+        assert 'testfailed' == page.info_panel.job_details.job_result_status
 
     # Test 'busted' unclassified failures
     page.select_busted_failures()
@@ -28,7 +28,7 @@ def test_filter_by_test_status(base_url, selenium):
     if len(page.all_jobs) > 0:
         page.close_the_job_panel()
         page.open_next_unclassified_failure()
-        assert 'busted' == page.job_details.job_result_status
+        assert 'busted' == page.info_panel.job_details.job_result_status
 
     # Test 'exception' unclassified failures
     page.select_exception_failures()
@@ -36,7 +36,7 @@ def test_filter_by_test_status(base_url, selenium):
     if len(page.all_jobs) > 0:
         page.close_the_job_panel()
         page.open_next_unclassified_failure()
-        assert 'exception' == page.job_details.job_result_status
+        assert 'exception' == page.info_panel.job_details.job_result_status
 
 
 @pytest.mark.nondestructive

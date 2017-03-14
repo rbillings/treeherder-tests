@@ -14,7 +14,7 @@ def test_unclassified_failure(base_url, selenium):
     page = TreeherderPage(selenium, base_url).open()
     assert page.unclassified_failure_count > 0
     page.open_next_unclassified_failure()
-    teststatus = page.job_details.job_result_status
+    teststatus = page.info_panel.job_details.job_result_status
     assert teststatus in ['busted', 'testfailed', 'exception']
 
 
@@ -24,7 +24,7 @@ def test_open_unclassified_failure_log(base_url, selenium):
     treeherder_page = TreeherderPage(selenium, base_url).open()
     assert treeherder_page.unclassified_failure_count > 0
     treeherder_page.open_next_unclassified_failure()
-    logviewer_page = treeherder_page.job_details.open_logviewer()
+    logviewer_page = treeherder_page.info_panel.job_details.open_logviewer()
     assert logviewer_page.is_job_status_visible
 
 
