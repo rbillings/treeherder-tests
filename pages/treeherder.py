@@ -380,14 +380,14 @@ class TreeherderPage(Base):
 
     class InfoPanel(Region):
 
-        _info_panel_content_locator = (By.ID, 'info-panel-content')
+        _root_locator = (By.ID, 'info-panel-content')
 
         @property
-        def info_panel_is_open(self):
-            el = self.find_element(*self._info_panel_content_locator)
-            return el.is_displayed()
+        def is_open(self):
+            return self.root.is_displayed()
 
     class JobDetails(Region):
+        """TODO: Move region under InfoPanel"""
 
         _job_details_panel_locator = (By.ID, 'job-details-panel')
         _job_keyword_locator = (By.CSS_SELECTOR, '#job-details-pane > ul > li > a:nth-last-child(1)')

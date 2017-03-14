@@ -18,12 +18,12 @@ def test_close_open_panels(base_url, selenium):
     page.select_random_job()
 
     assert page.filter_panel_is_open
-    assert page.info_panel.info_panel_is_open
+    assert page.info_panel.is_open
 
     page.close_all_panels()
 
     assert not page.filter_panel_is_open
-    assert not page.info_panel.info_panel_is_open
+    assert not page.info_panel.is_open
 
 
 def test_enter_quick_filter_shortcut(base_url, selenium):
