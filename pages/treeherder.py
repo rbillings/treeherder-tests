@@ -25,6 +25,7 @@ class TreeherderPage(Base):
     _filter_panel_locator = (By.CSS_SELECTOR, 'span.navbar-right > span:nth-child(4)')
     _filter_panel_reset_locator = (By.CSS_SELECTOR, '.pull-right span:nth-child(3)')
     _filter_panel_testfailed_failures_locator = (By.ID, 'testfailed')
+    _info_panel_content_locator = (By.ID, 'info-panel-content')
     _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
     _nav_filter_coalesced_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=coalesced]')
     _nav_filter_failures_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=failures]')
@@ -375,15 +376,6 @@ class TreeherderPage(Base):
                 self.wait.until(lambda _: self.page.info_panel.job_details.job_result_status)
 
     class InfoPanel(Region):
-
-        _root_locator = (By.ID, 'info-panel-content')
-
-        @property
-        def is_open(self):
-            return self.root.is_displayed()
-
-    class JobDetails(Region):
-        """TODO: Move region under InfoPanel"""
 
         _root_locator = (By.ID, 'info-panel-content')
 
