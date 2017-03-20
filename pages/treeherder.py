@@ -393,11 +393,11 @@ class TreeherderPage(Base):
 
         @property
         def job_details(self):
-            return self.JobDetails(self)
+            return self.JobDetails(self.page)
 
         class JobDetails(Region):
 
-            _job_details_panel_locator = (By.ID, 'job-details-panel')
+            _root_locator = (By.ID, 'job-details-panel')
             _job_keyword_locator = (By.CSS_SELECTOR, '#job-details-pane > ul > li > a:nth-last-child(1)')
             _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span:nth-child(2)')
             _logviewer_button_locator = (By.ID, 'logviewer-btn')
@@ -415,7 +415,7 @@ class TreeherderPage(Base):
                 self.find_element(*self._job_keyword_locator).click()
 
             def open_logviewer(self):
-                self.find_element(*self._job_details_panel_locator).send_keys('l')
+                self.root.send_keys('l')
                 window_handles = self.selenium.window_handles
                 for handle in window_handles:
                     self.selenium.switch_to.window(handle)
