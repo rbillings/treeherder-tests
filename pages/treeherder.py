@@ -335,10 +335,12 @@ class TreeherderPage(Base):
         def set_as_bottom_of_range(self):
             self.find_element(*self._dropdown_toggle_locator).click()
             self.find_element(*self._set_bottom_of_range_locator).click()
+            self.page.wait_for_page_to_load()
 
         def set_as_top_of_range(self):
             self.find_element(*self._dropdown_toggle_locator).click()
             self.find_element(*self._set_top_of_range_locator).click()
+            self.page.wait_for_page_to_load()
 
         def view(self):
             return self.find_element(*self._datestamp_locator).click()
