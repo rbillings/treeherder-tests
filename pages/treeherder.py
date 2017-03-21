@@ -46,6 +46,9 @@ class TreeherderPage(Base):
         self.wait.until(lambda s: len(self.result_sets) >= 1)
         return self
 
+    def wait_for_unclassified_failures_to_load(self):
+        self.wait.until(lambda s: self.unclassified_failure_count >=1)
+
     @property
     def active_watched_repo(self):
         return self.find_element(*self._active_watched_repo_locator).text
@@ -376,7 +379,7 @@ class TreeherderPage(Base):
 
             def click(self):
                 self.root.click()
-                self.wait.until(lambda _: self.page.job_details.job_result_status)
+                self.wait.until(lambda _: self.page.job_details.is_job_details_open)
 
     class InfoPanel(Region):
 
@@ -394,6 +397,10 @@ class TreeherderPage(Base):
         _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span:nth-child(2)')
         _logviewer_button_locator = (By.ID, 'logviewer-btn')
         _pin_job_locator = (By.ID, 'pin-job-btn')
+
+        @property
+        def is_job_details_open(self):
+            return self.is_element_displayed(*self._job_details_panel_locator)
 
         @property
         def job_keyword_name(self):
