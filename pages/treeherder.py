@@ -399,10 +399,6 @@ class TreeherderPage(Base):
         _pin_job_locator = (By.ID, 'pin-job-btn')
 
         @property
-        def is_job_details_open(self):
-            return self.is_element_displayed(*self._job_details_panel_locator)
-
-        @property
         def job_keyword_name(self):
             return self.find_element(*self._job_keyword_locator).text
 

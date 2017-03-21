@@ -4,7 +4,6 @@
 
 import pytest
 import random
-import time
 
 from pages.treeherder import TreeherderPage
 
