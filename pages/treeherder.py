@@ -341,7 +341,8 @@ class TreeherderPage(Base):
             self.find_element(*self._set_top_of_range_locator).click()
 
         def view(self):
-            return self.find_element(*self._datestamp_locator).click()
+            self.find_element(*self._datestamp_locator).click()
+            self.page.wait_for_page_to_load()
 
         class Build(Region):
 
