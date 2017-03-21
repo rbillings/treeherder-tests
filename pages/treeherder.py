@@ -379,7 +379,7 @@ class TreeherderPage(Base):
 
             def click(self):
                 self.root.click()
-                self.wait.until(lambda _: self.page.job_details.is_job_details_open)
+                self.wait.until(lambda _: self.page.job_details.job_result_status)
 
     class InfoPanel(Region):
 
