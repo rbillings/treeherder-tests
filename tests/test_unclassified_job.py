@@ -17,6 +17,7 @@ def test_unclassified_failure(base_url, selenium):
     teststatus = page.job_details.job_result_status
     assert teststatus in ['busted', 'testfailed', 'exception']
 
+
 @pytest.mark.nondestructive
 def test_open_unclassified_failure_log(base_url, selenium):
     """Open the job log and verify there is content"""
