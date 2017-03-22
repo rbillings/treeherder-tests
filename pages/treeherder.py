@@ -47,7 +47,7 @@ class TreeherderPage(Base):
         return self
 
     def wait_for_unclassified_failures_to_load(self):
-        self.wait.until(lambda s: self.unclassified_failure_count >=1)
+        self.wait.until(lambda s: self.unclassified_failure_count >= 1)
 
     @property
     def active_watched_repo(self):
