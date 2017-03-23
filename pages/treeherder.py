@@ -25,6 +25,7 @@ class TreeherderPage(Base):
     _filter_panel_locator = (By.CSS_SELECTOR, 'span.navbar-right > span:nth-child(4)')
     _filter_panel_reset_locator = (By.CSS_SELECTOR, '.pull-right span:nth-child(3)')
     _filter_panel_testfailed_failures_locator = (By.ID, 'testfailed')
+    _info_panel_content_locator = (By.ID, 'info-panel-content')
     _mozilla_central_repo_locator = (By.CSS_SELECTOR, '#th-global-navbar-top a[href*="mozilla-central"]')
     _nav_filter_coalesced_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=coalesced]')
     _nav_filter_failures_locator = (By.CSS_SELECTOR, '.btn-nav-filter[title=failures]')
@@ -78,10 +79,6 @@ class TreeherderPage(Base):
     @property
     def info_panel(self):
         return self.InfoPanel(self)
-
-    @property
-    def job_details(self):
-        return self.JobDetails(self)
 
     @property
     def nav_filter_coalesced_is_selected(self):
@@ -226,7 +223,7 @@ class TreeherderPage(Base):
         el = self.find_element(*self._result_sets_locator)
         self.wait.until(EC.visibility_of(el))
         el.send_keys('n')
-        self.wait.until(lambda s: self.job_details.job_result_status)
+        self.wait.until(lambda s: self.info_panel.job_details.job_result_status)
 
     def open_perfherder_page(self):
         self.header.switch_page_using_dropdown()
@@ -335,13 +332,16 @@ class TreeherderPage(Base):
         def set_as_bottom_of_range(self):
             self.find_element(*self._dropdown_toggle_locator).click()
             self.find_element(*self._set_bottom_of_range_locator).click()
+            self.page.wait_for_page_to_load()
 
         def set_as_top_of_range(self):
             self.find_element(*self._dropdown_toggle_locator).click()
             self.find_element(*self._set_top_of_range_locator).click()
+            self.page.wait_for_page_to_load()
 
         def view(self):
-            return self.find_element(*self._datestamp_locator).click()
+            self.find_element(*self._datestamp_locator).click()
+            self.page.wait_for_page_to_load()
 
         class Build(Region):
 
@@ -376,7 +376,7 @@ class TreeherderPage(Base):
 
             def click(self):
                 self.root.click()
-                self.wait.until(lambda _: self.page.job_details.job_result_status)
+                self.wait.until(lambda _: self.page.info_panel.job_details.job_result_status)
 
     class InfoPanel(Region):
 
@@ -386,37 +386,40 @@ class TreeherderPage(Base):
         def is_open(self):
             return self.root.is_displayed()
 
-    class JobDetails(Region):
-        """TODO: Move region under InfoPanel"""
-
-        _job_details_panel_locator = (By.ID, 'job-details-panel')
-        _job_keyword_locator = (By.CSS_SELECTOR, '#job-details-pane > ul > li > a:nth-last-child(1)')
-        _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span:nth-child(2)')
-        _logviewer_button_locator = (By.ID, 'logviewer-btn')
-        _pin_job_locator = (By.ID, 'pin-job-btn')
-
         @property
-        def job_keyword_name(self):
-            return self.find_element(*self._job_keyword_locator).text
+        def job_details(self):
+            return self.JobDetails(self.page)
 
-        @property
-        def job_result_status(self):
-            return self.find_element(*self._job_result_status_locator).text
+        class JobDetails(Region):
 
-        def filter_by_job_keyword(self):
-            self.find_element(*self._job_keyword_locator).click()
+            _root_locator = (By.ID, 'job-details-panel')
+            _job_keyword_locator = (By.CSS_SELECTOR, '#job-details-pane > ul > li > a:nth-last-child(1)')
+            _job_result_status_locator = (By.CSS_SELECTOR, '#result-status-pane > div:nth-child(1) > span:nth-child(2)')
+            _logviewer_button_locator = (By.ID, 'logviewer-btn')
+            _pin_job_locator = (By.ID, 'pin-job-btn')
 
-        def open_logviewer(self):
-            self.find_element(*self._job_details_panel_locator).send_keys('l')
-            window_handles = self.selenium.window_handles
-            for handle in window_handles:
-                self.selenium.switch_to.window(handle)
-            return LogviewerPage(self.selenium, self.page.base_url).wait_for_page_to_load()
+            @property
+            def job_keyword_name(self):
+                return self.find_element(*self._job_keyword_locator).text
 
-        def pin_job(self):
-            el = self.find_element(*self._job_keyword_locator)
-            self.wait.until(EC.visibility_of(el))
-            self.find_element(*self._pin_job_locator).click()
+            @property
+            def job_result_status(self):
+                return self.find_element(*self._job_result_status_locator).text
+
+            def filter_by_job_keyword(self):
+                self.find_element(*self._job_keyword_locator).click()
+
+            def open_logviewer(self):
+                self.root.send_keys('l')
+                window_handles = self.selenium.window_handles
+                for handle in window_handles:
+                    self.selenium.switch_to.window(handle)
+                return LogviewerPage(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+            def pin_job(self):
+                el = self.find_element(*self._job_keyword_locator)
+                self.wait.until(EC.visibility_of(el))
+                self.find_element(*self._pin_job_locator).click()
 
     class Pinboard(Region):
 

@@ -22,7 +22,7 @@ def test_pin_job_from_job_details(base_url, selenium):
     job = page.result_sets[0].jobs[0]
     job.click()
     assert 0 == len(page.pinboard.jobs)
-    page.job_details.pin_job()
+    page.info_panel.job_details.pin_job()
     assert 1 == len(page.pinboard.jobs)
     assert job.symbol == page.pinboard.selected_job.symbol
 
