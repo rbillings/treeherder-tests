@@ -12,13 +12,9 @@ def test_treeherder_dropdown(base_url, selenium):
     """Switch between Treeherder and Perfherder using header dropdown"""
     treeherder_page = TreeherderPage(selenium, base_url).open()
 
-    # Verify Treeherder loads
-    assert treeherder_page.result_sets > 0
-
     # Switch to Perfherder page
     perfherder_page = treeherder_page.open_perfherder_page()
     assert perfherder_page.is_graph_chooser_displayed
 
     # Return to Treeherder page
     treeherder_page = perfherder_page.open_treeherder_page()
-    assert treeherder_page.result_sets > 0
